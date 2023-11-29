@@ -7,19 +7,27 @@ from app import db
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(64), nullable = False)
-    lastName = db.Column(db.String(64), nullable = False)
+    lastName = db.Column(db.String(64), nullable = True)
     phone_no = db.Column(db.Integer, nullable = True)
     email = db.Column(db.String(320), unique = True, nullable = False)
     isAdmin = db.Column(db.Boolean, nullable=False)
+    password = db.Column(db.String(100), nullable = False) # TODO implement hash for password once everything is good
 
-    def __init__(self, fname, lname, email, phoneNo):
+    def __init__(self, fname, lname, email, phoneNo, pwd):
         self.firstName = fname
         self.lastName = lname
         self.email = email
         self.isAdmin = False
         self.phone_no = phoneNo 
+        self.password = pwd
 
-    password = db.Column(db.String(100), nullable = False) # TODO implement hash for password once everything is good
+    def __init__(self, fname, email, pwd):
+        self.firstName = fname
+        self.email = email
+        self.password = pwd
+
+        self.isAdmin = False
+
 
     reviews = db.relationship('Review', backref='user', lazy = True)
     schedules = db.relationship('Schedule', backref='user', lazy = True)
