@@ -9,4 +9,4 @@ def index():
 
 @main.route('/home')
 def home():
-    return 'home'
+    return 'fat nuts in your mouth'

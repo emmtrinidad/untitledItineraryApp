@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from app import db
 from models import User
+from flask_login import login_user, login_required, logout_user
 
 global counter
 counter = 0
@@ -14,10 +15,6 @@ def login():
 @auth.route('/signup')
 def signup():
     return render_template('signup.html')
-
-@auth.route('/logout')
-def logout():
-    return render_template('logout.html')
 
 
 @auth.route('/signup', methods=['POST'])
@@ -41,3 +38,25 @@ def signup_post():
     db.session.commit()
 
     return redirect(url_for('auth.login'))
+
+@auth.route('/login', methods=['POST'])
+def login_post():
+    
+    email = request.form.get('email')
+    password = request.form.get('password')
+    remember = True if request.form.get('remember') else False
+
+    user = User.query.filter_by(email = email).first() #get email
+
+    if user.password != password or not user:
+        flash('wrong')
+        return redirect(url_for('auth.login'))
+
+    login_user(user, remember)
+    return redirect(url_for('main.home'))
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.index'))

@@ -1,10 +1,11 @@
 from datetime import datetime
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 from app import db
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(64), nullable = False)
     lastName = db.Column(db.String(64), nullable = True)
@@ -39,10 +40,15 @@ class Schedule(db.Model):
     startDate = db.Column(db.DateTime, nullable = False)
     endDate = db.Column(db.DateTime, nullable = False)
 
+    def __init__(self, cId, sId, startD, endD):
+        self.creatorId = cId
+        self.scheduleId = sId
+        self.startDate = startD
+        self.endDate = endD
+
 class Event(db.Model):
     creatorId = db.Column(db.Integer, db.ForeignKey('user.id'))
     scheduleId = db.Column(db.Integer, primary_key = True)
-    date = db.Column(db.Date, nullable = False)
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
 
