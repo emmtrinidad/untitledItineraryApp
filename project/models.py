@@ -1,40 +1,34 @@
 from datetime import datetime
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
-app = Flask(__name__)
-app.app_context().push()
+from app import db
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-#TODO put everything in different files
-
-db = SQLAlchemy(app)
-
-class Todo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False) #nullable allows for non-empty values
-    completed = db.Column(db.Integer, default = 0) #never used
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return '<task %r>' % self.id    #when created will return task and its id
-    
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(64), nullable = False)
-    lastName = db.Column(db.String(64), nullable = False)
+    lastName = db.Column(db.String(64), nullable = True)
     phone_no = db.Column(db.Integer, nullable = True)
     email = db.Column(db.String(320), unique = True, nullable = False)
     isAdmin = db.Column(db.Boolean, nullable=False)
+    password = db.Column(db.String(100), nullable = False) # TODO implement hash for password once everything is good
 
-    def __init__(self, fname, lname, email, phoneNo):
+    def __init__(self, fname, lname, email, phoneNo, pwd):
         self.firstName = fname
         self.lastName = lname
         self.email = email
         self.isAdmin = False
         self.phone_no = phoneNo 
+        self.password = pwd
 
-    password = db.Column(db.String(100), nullable = False) # TODO implement hash for password once everything is good
+    def __init__(self, fname, email, pwd):
+        self.firstName = fname
+        self.email = email
+        self.password = pwd
+
+        self.isAdmin = False
+
 
     reviews = db.relationship('Review', backref='user', lazy = True)
     schedules = db.relationship('Schedule', backref='user', lazy = True)
@@ -46,10 +40,15 @@ class Schedule(db.Model):
     startDate = db.Column(db.DateTime, nullable = False)
     endDate = db.Column(db.DateTime, nullable = False)
 
+    def __init__(self, cId, sId, startD, endD):
+        self.creatorId = cId
+        self.scheduleId = sId
+        self.startDate = startD
+        self.endDate = endD
+
 class Event(db.Model):
     creatorId = db.Column(db.Integer, db.ForeignKey('user.id'))
     scheduleId = db.Column(db.Integer, primary_key = True)
-    date = db.Column(db.Date, nullable = False)
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
 
@@ -97,12 +96,3 @@ class Attraction(db.Model):
     menu = db.Column(db.String(), nullable = True) #href to link for menu
     activity = db.Column(db.String(50), nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
-
-
-
-@app.route('/') #url string of app here
-def index():
-    return render_template('index.html')
-
-if __name__ == "__main__":
-    app.run(debug=True)
