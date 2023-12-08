@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Sign Up</h3>
+    <h3 class="title">Schedules</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -11,29 +11,40 @@
             </div>
         {% endif %}
         {% endwith %}
-        <form method="POST" action="/signup">
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="text" name="name" placeholder="Schedule Name" autofocus="">
-                </div>
-            </div>
+        
+        {% if schedules%}
+            <a href="/createschedule"> make new schedule</a>    
+            <h3>counter at {{count}}</h3>
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Schedule name</th>
+                    <th>CreatorID</th>
+                    <th>SchedID</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in schedules %}
+                        <tr> 
+                              <th>{{row['scheduleName']}}</th>
+                              <td>{{row['creatorId']}}</td>
+                              <td>{{row['scheduleId']}}</td>
+                              <td>{{row['startDate']}}</td>
+                              <td>{{row['endDate']}}</td>
+                              <td>sup</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
 
-            <h3>Choose a starting date</h3>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="datetime-local" name="sDate">
-                </div>
-            </div>
-
-            <h3>Choose an ending date</h3>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="datetime-local" name="eDate">
-                </div>
-            </div>
-
-            <button class="button is-block is-info is-large is-fullwidth">Create</button>
-        </form>
+        {% else %}
+            <h3>schedules is empty</h3>
+            <a href="/createschedule">why not make one?</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

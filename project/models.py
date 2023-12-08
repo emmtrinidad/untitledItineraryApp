@@ -37,18 +37,20 @@ class User(UserMixin, db.Model):
 class Schedule(db.Model):
     creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     scheduleId = db.Column(db.Integer, primary_key = True)
+    scheduleName = db.Column(db.String(300), nullable = False)
     startDate = db.Column(db.DateTime, nullable = False)
     endDate = db.Column(db.DateTime, nullable = False)
 
-    def __init__(self, cId, sId, startD, endD):
+    def __init__(self,cId, sId, name, startD, endD):
         self.creatorId = cId
         self.scheduleId = sId
+        self.scheduleName = name
         self.startDate = startD
         self.endDate = endD
 
 class Event(db.Model):
     creatorId = db.Column(db.Integer, db.ForeignKey('user.id'))
-    scheduleId = db.Column(db.Integer, primary_key = True)
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), primary_key = True)
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
 
