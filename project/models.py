@@ -22,7 +22,17 @@ class User(UserMixin, db.Model):
         self.phone_no = phoneNo 
         self.password = pwd
 
+    #delete this later - used for testing purposes currently
     def __init__(self, fname, email, pwd):
+        self.id = 0
+        self.firstName = fname
+        self.email = email
+        self.password = pwd
+
+        self.isAdmin = False
+
+    def __init__(self, id, fname, email, pwd):
+        self.id = id
         self.firstName = fname
         self.email = email
         self.password = pwd
