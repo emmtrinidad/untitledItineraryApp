@@ -1,0 +1,51 @@
+<!--
+    NOT TO BE CONFUSED WITH SCHEDULE
+    html file for viewing ONE CERTAIN schedule
+
+-->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">{{schedule['scheduleName']}}</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if events %}
+            <a href="/schedules/{{schedule['scheduleId']}}/createevent"> add new event</a>    
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Event name</th>
+                    <th>Start time</th>
+                    <th>End time</th>
+                    <th>Location</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                        <tr> 
+                              <th>here is an event</th>
+                              <td>and such</td>
+                              <td><a href="schedules/{{schedule['scheduleId']/event['eventId']}}">view</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+
+        {% else %}
+            <h3>event is empty</h3>
+            <a href="/schedules/{{schedule['scheduleId']}}/createevent">why not make one?</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

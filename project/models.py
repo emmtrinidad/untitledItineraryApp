@@ -37,20 +37,34 @@ class User(UserMixin, db.Model):
 class Schedule(db.Model):
     creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     scheduleId = db.Column(db.Integer, primary_key = True)
+    scheduleName = db.Column(db.String(300), nullable = False)
     startDate = db.Column(db.DateTime, nullable = False)
     endDate = db.Column(db.DateTime, nullable = False)
 
-    def __init__(self, cId, sId, startD, endD):
+    def __init__(self,cId, sId, name, startD, endD):
         self.creatorId = cId
         self.scheduleId = sId
+        self.scheduleName = name
         self.startDate = startD
         self.endDate = endD
 
 class Event(db.Model):
+    eventId = db.Column(db.Integer, primary_key = True)
     creatorId = db.Column(db.Integer, db.ForeignKey('user.id'))
-    scheduleId = db.Column(db.Integer, primary_key = True)
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'))
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
+    location = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = True) #does not always need set location
+    cityCode = db.Column(db.String(3), db.ForeignKey('city.airportCode'))
+
+    def __init__(self, eId, cId, sId, startTime, endTime, location, city):
+        self.eventId = eId
+        self.creatorId = cId
+        self.scheduleId = sId
+        self.startTime = startTime
+        self.endTime = endTime
+        self.location = location
+        self.cityCode = city
 
 class Country(db.Model):
     countryName = db.Column(db.String, primary_key = True)

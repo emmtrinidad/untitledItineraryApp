@@ -2,9 +2,9 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from app import db
 from models import User
 from flask_login import login_user, login_required, logout_user
+from counter import Counter
 
-global counter
-counter = 0
+assignUserId = Counter(0)
 
 auth = Blueprint('auth', __name__)
 
@@ -31,7 +31,9 @@ def signup_post():
         return redirect(url_for('auth.signup'))
 
     # TODO hash password for deployment
-    new = User(name, m, password)
+    new = User(assignUserId.get() ,name, m, password)
+
+    assignUserId.increment()
 
     # add the new user to the database
     db.session.add(new)
