@@ -54,7 +54,7 @@ class Event(db.Model):
     scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'))
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
-    location = db.Column(db.String(300), db.ForeignKey('attraction.address'), nullable = True) #does not always need set location
+    location = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = True) #does not always need set location
     cityCode = db.Column(db.String(3), db.ForeignKey('city.airportCode'))
 
     def __init__(self, eId, cId, sId, startTime, endTime, location, city):
