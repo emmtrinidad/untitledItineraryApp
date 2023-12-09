@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from app import db
-from models import User, Schedule
+from models import User, Schedule, Event
 from datetime import datetime
 from counter import Counter
 
@@ -25,12 +25,13 @@ def schedules():
 def scheduleAtId(param):
 
     #gets schedule with id param
-    schedule = Schedule.query.filter_by(scheduleId=param).first()
+    sched = Schedule.query.filter_by(scheduleId=param).first()
+    evnts = Event.query.filter_by(scheduleId=param)
 
-    if not schedule:
+    if not sched:
         return 'placeholder text for schedule not found'
 
-    return param
+    return render_template('schedule.html', schedule = sched, events = evnts)
 
 #get all events
 @sched.route('/events')
