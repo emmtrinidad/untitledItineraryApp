@@ -20,40 +20,52 @@ def countries():
 @area.route('/locations/countries/<string:countryName>')
 def country(countryName):
 
-    country = Country.query.filter_by(countryName = countryName).first()
+    country = countryQueryData(countryName)
 
     if not country:
         return 'no countries but it works'
     
     return 'works'
 
-@area.route("/locations/countries/<string:countryName>/provinces")
+@area.route("/locations/<string:countryName>/provinces")
 def provinces(countryName):
-    country(countryName)
+    countryQueryData(countryName)
 
-    provinces = Country.query.order_by(Country.provinces)
+    provinces = Province.query.order_by(Province.provinceCode).all()
     return render_template("provinces.html", provinces=provinces)
 
-# @area.route("/locations/countries/<string:countryName>/provinces/<string:provinceCode>")
-# def province(countryName, provinceCode):
-#     provinces(countryName)
+@area.route("/locations/<string:countryName>/provinces/<string:provinceCode>")
+def province(countryName, provinceCode):
+    countryQueryData(countryName)
     
-#     province = Province.query.filter_by(provinceCode=provinceCode).first()
+    province = provinceQueryData(provinceCode)
 
-#     if not province:
-#         return "province does not exist in database"
+    if not province:
+        return "province does not exist in database"
     
-#     return render_template("province.html", province=province)
+    return render_template("province.html", province=province)
 
-# @area.route("/locations/countries/<string:countryName>/provinces/<string:provinceCode>/cities")
-# def cities(countryName, provinceCode):
-#     province(countryName, provinceCode)
-#     return "placeholder"
+@area.route("/locations/<string:countryName>/<string:provinceCode>/cities")
+def cities(countryName, provinceCode):
+    countryQueryData(countryName)
+    provinceQueryData(provinceCode)
 
-# @area.route("/locations/countries/<string:countryName>/provinces/<string:provinceCode>/cities/<string:name>")
-# def city(countryName, provinceCode, name):
-#     cities(countryName, provinceCode)
-#     return "placeholder"
+    cities = City.query.order_by(City.name).all()
+    return render_template("cities.html", cities=cities)
 
+@area.route("/locations/<string:countryName>/<string:provinceCode>/cities/<string:name>")
+def city(countryName, provinceCode, name):
+    countryQueryData(countryName)
+    provinceQueryData(provinceCode)
+    city = cityQueryData(name)
+    return render_template("city.html", city=city)
+
+# Functions for retrieving data
 def countryQueryData(countryName):
-    country = Country.query.filter_by(countryName = countryName).first()
+    return Country.query.filter_by(countryName = countryName).first()
+
+def provinceQueryData(provinceCode):
+    return Province.query.filter_by(provinceCode=provinceCode).first()
+
+def cityQueryData(cityName):
+    return City.query.filter_by(name=cityName).first()
