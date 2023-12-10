@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from app import db
-from models import User, Download, Schedule
+from models import User, Download, Schedule, Review
 from flask_login import login_user, login_required, logout_user, current_user
 
 #TODO perms
@@ -35,3 +35,12 @@ def adminViewDownloads(userId):
             schedules.append(schedule)
 
     return render_template('adminuserdownloads.html', user = user, schedules = schedules)
+
+@adminView.route('/admin/<int:userId>/reviews')
+def adminViewReviews(userId):
+
+    user = User.query.filter_by(id = userId).first()
+
+    reviews = Review.query.filter_by(creatorId = user.id).all()
+
+    return render_template('adminUserReviews.html', user = user, reviews = reviews)
