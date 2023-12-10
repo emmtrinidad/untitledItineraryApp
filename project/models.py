@@ -120,3 +120,12 @@ class Attraction(db.Model):
     menu = db.Column(db.String(), nullable = True) #href to link for menu
     activity = db.Column(db.String(50), nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
+
+class Download(db.Model):
+
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), primary_key = True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+
+    def __init__(self, sId, uId):
+        self.scheduleId = sId
+        self.userId = uId

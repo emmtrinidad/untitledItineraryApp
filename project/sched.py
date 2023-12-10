@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_login import login_required, current_user
 from app import db
-from models import User, Schedule, Event
+from models import Download, User, Schedule, Event
 from datetime import datetime
 from counter import Counter
 
@@ -116,7 +117,7 @@ def insertSched():
 
     return redirect(url_for('sched.schedules'))
 
-sched.route('/events', methods = ['POST'])
+@sched.route('/events', methods = ['POST'])
 def insertEvent():
 
     name = request.form.get('name')
@@ -134,3 +135,38 @@ def insertEvent():
         return redirect(url_for('sched.createEvent'))
     
     return redirect(url_for('sched.events'))
+
+@sched.route('/downloads')
+@login_required #user needs to be logged in in order to actually check downloads
+def getDownloads():
+
+    check = current_user.get_id()
+
+    downloads = Download.query.filter_by(userId = check).all() #get downloads
+
+    schedules = [] #schedules are put in a list
+
+    for x in downloads:
+        schedule = Schedule.query.filter_by(scheduleId = x.scheduleId).first() #for every element in downloads, checks if existing scheduleId for sched id in download entry
+
+        if schedule:
+            schedules.append(schedule) # if so, add
+
+    return render_template('downloads.html', schedules = schedules)
+
+@sched.route('/downloadschedule/<int:schedId>')
+@login_required
+def downloadSchedule(schedId):
+
+    uId = current_user.get_id()
+
+    check = Schedule.query.filter_by(scheduleId = schedId).first() #check if the schedule actually exists
+
+    if not check:
+        redirect(url_for('sched.schedules'))
+
+    new = Download(check.scheduleId, uId)
+    db.session.add(new)
+    db.session.commit()
+
+    return render_template('schedules.html')
