@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Admin users</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>user id</th>
+                    <th>Fname</th>
+                    <th>Lname</th>
+                    <th>Email</th>
+                    <th>Phone no</th>
+                    <th>password</th>
+                    <th>actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in users %}
+                        <tr> 
+                              <th>{{row['id']}}</th>
+                              <td>{{row['firstName']}}</td>
+                              <td>{{row['lastName']}}</td>
+                              <td>{{row['email']}}</td>
+                              <td>{{row['phoneNo']}}</td>
+                              <td>{{row['password']}}</td>
+                              <td>
+                                <a>suggest</a>
+                                <a>view downloads</a>
+                                <a>view reviews</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+
+    </div>
+</div>
+{% endblock %}

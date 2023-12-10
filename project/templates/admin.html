@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-head">
+    <nav class="navbar">
+        <div class="container">
+            <div id="navbarMenuHeroA" class="navbar-menu">
+                <div class="navbar-end">
+                    <a class="navbar-item">
+                        View users
+                    </a>
+
+                    <a  class="navbar-item">
+                        View schedules
+                    </a>
+                    <a  class="navbar-item">
+                        View events
+                    </a>
+                    
+                    <a  class="navbar-item">
+                        View pending attractions
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Admin page</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if schedules%}
+            <a href="/schedules"> Download new schedules!</a>    
+            <h3>counter at {{count}}</h3>
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Schedule name</th>
+                    <th>CreatorID</th>
+                    <th>SchedID</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in schedules %}
+                        <tr> 
+                              <th>{{row['scheduleName']}}</th>
+                              <td>{{row['creatorId']}}</td>
+                              <td>{{row['scheduleId']}}</td>
+                              <td>{{row['startDate']}}</td>
+                              <td>{{row['endDate']}}</td>
+                              <td><a href="schedules/{{row['scheduleId']}}">view</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+
+        {% else %}
+            <h3>schedules is empty</h3>
+            <a href="/schedules">Download new schedules!</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
