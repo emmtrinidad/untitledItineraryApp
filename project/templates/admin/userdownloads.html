@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">{{user['firstName']}} downloads</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if schedules%}
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Schedule name</th>
+                    <th>CreatorID</th>
+                    <th>SchedID</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in schedules %}
+                        <tr> 
+                              <th>{{row['scheduleName']}}</th>
+                              <td>{{row['creatorId']}}</td>
+                              <td>{{row['scheduleId']}}</td>
+                              <td>{{row['startDate']}}</td>
+                              <td>{{row['endDate']}}</td>
+                              <td><a href="schedules/{{row['scheduleId']}}">view</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+
+        {% else %}
+            <h3>{{user['firstName']}} has no downloads.</h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">{% if user %}{{user['firstName']}} {% endif %}reviews</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if reviews%}
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Creator Id</th>
+                    <th>comment</th>
+                    <th>stars</th>
+                    <th>approved?</th>
+                    <th>review id</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in reviews %}
+                        <tr> 
+                              <th>{{row['creatorId']}}</th>
+                              <td>{{row['comment']}}</td>
+                              <td>{{row['stars']}}</td>
+                              <td>{{row['approvedFlag']}}</td>
+                              <td>{{row['reviewId']}}</td>
+                              <td>
+                                {% if not row['approvedFlag']%}
+                                <a href="/admin/reviews/approve/{{row['reviewId']}}">approve review</a>
+                                {% endif %}
+                                <a href="/admin/reviews/delete/{{row['reviewId']}}">delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+
+        {% else %}
+            <h3>{% if user %}{{user['firstName']}} has no reviews. {% else %}No reviews matching this criteria{% endif %} </h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
