@@ -106,9 +106,17 @@ class Suggestion(db.Model):
 
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
     adminId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
-    user = db.relationship("User", foreign_keys=[userId])
-    admin = db.relationship("User", foreign_keys=[adminId])
     description = db.Column(db.String(3000), nullable = False) # review is nothing without the description
+
+    def __init__(self, u, a, d):
+        self.userId = u
+        self.admin = a
+        self.description = d
+
+    def __init__(self, u, d):
+        self.userId = u
+        self.adminId = 1 #placeholder
+        self.description = d
 
 class Attraction(db.Model):
     cityCode = db.Column(db.String, db.ForeignKey('city.airportCode'), nullable = False)

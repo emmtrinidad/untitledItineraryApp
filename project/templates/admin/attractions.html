@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Attractions</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if attractions%}
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>city code</th>
+                    <th>address</th>
+                    <th>name</th>
+                    <th>cost</th>
+                    <th>type of restaurant</th>
+                    <th>menu</th>
+                    <th>activity</th>
+                    <th>approved</th>
+                    <th>actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in attractions %}
+                        <tr> 
+                              <th>{{row['cityCode']}}</th>
+                              <td>{{row['Address']}}</td>
+                              <td>{{row['Name']}}</td>
+                              <td>{{row['Cost']}}</td>
+                              <th>{{row['typeOfRestaurant']}}</th>
+                              <td>{{row['menu']}}</td>
+                              <td>{{row['activity']}}</td>
+                              <td>{{row['approvedFlag']}}</td>
+                              <td>
+                                <a>remove</a>
+                                {% if not row['approvedFlag']%}
+                                    <a>approve</a>
+                                {% endif %} 
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+
+        {% else %}
+            <h3>nothing yet</h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

@@ -82,16 +82,8 @@ def insertSched():
         flash('uhhhh')
         return redirect(url_for('sched.createSched'))
 
-
-    #flash(start)
-    #return redirect(url_for('sched.createSched'))
-
     startStr = str(start)
     endStr = str(end)
-
-    #start.replace('T', ' ')
-    #end.replace('T', ' ')
-
 
     #convert to dateTime
     dateFormat = '%Y-%m-%dT%H:%M'

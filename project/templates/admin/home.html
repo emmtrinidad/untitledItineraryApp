@@ -6,18 +6,18 @@
         <div class="container">
             <div id="navbarMenuHeroA" class="navbar-menu">
                 <div class="navbar-end">
-                    <a class="navbar-item">
+                    <a href = "{{url_for('adminView.adminUsers')}}" class="navbar-item">
                         View users
                     </a>
 
-                    <a  class="navbar-item">
+                    <a class="navbar-item">
                         View schedules
                     </a>
-                    <a  class="navbar-item">
-                        View events
+                    <a  href="" class="navbar-item">
+                        View pending reviews
                     </a>
                     
-                    <a  class="navbar-item">
+                    <a href = "{{url_for('adminView.adminViewPendingAttractions')}}" class="navbar-item">
                         View pending attractions
                     </a>
 
