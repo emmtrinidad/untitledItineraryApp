@@ -26,3 +26,34 @@ def country(countryName):
         return 'no countries but it works'
     
     return 'works'
+
+@area.route("/locations/countries/<string:countryName>/provinces")
+def provinces(countryName):
+    country(countryName)
+
+    provinces = Country.query.order_by(Country.provinces)
+    return render_template("provinces.html", provinces=provinces)
+
+# @area.route("/locations/countries/<string:countryName>/provinces/<string:provinceCode>")
+# def province(countryName, provinceCode):
+#     provinces(countryName)
+    
+#     province = Province.query.filter_by(provinceCode=provinceCode).first()
+
+#     if not province:
+#         return "province does not exist in database"
+    
+#     return render_template("province.html", province=province)
+
+# @area.route("/locations/countries/<string:countryName>/provinces/<string:provinceCode>/cities")
+# def cities(countryName, provinceCode):
+#     province(countryName, provinceCode)
+#     return "placeholder"
+
+# @area.route("/locations/countries/<string:countryName>/provinces/<string:provinceCode>/cities/<string:name>")
+# def city(countryName, provinceCode, name):
+#     cities(countryName, provinceCode)
+#     return "placeholder"
+
+def countryQueryData(countryName):
+    country = Country.query.filter_by(countryName = countryName).first()
