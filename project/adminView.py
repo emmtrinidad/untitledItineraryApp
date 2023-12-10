@@ -1,4 +1,5 @@
 from counter import Counter
+from counter import Counter
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from app import db
 from models import Suggestion, User, Download, Schedule, Review, Attraction
@@ -6,6 +7,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 #TODO split up code into multiple files
 
+assignId = Counter(0)
 assignId = Counter(0)
 
 adminView = Blueprint('adminView', __name__)
@@ -16,12 +18,17 @@ def adminCheck():
     user = User.query.filter_by(id = check).first()
 
     if not user or not user.isAdmin:
-        return render_template('index.html')
+        return redirect(url_for('main.index'))
     
     return
 
 @adminView.route('/admin')
 def admin():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
     check = current_user.get_id()
     user = User.query.filter_by(id = check).first()
 
@@ -38,6 +45,12 @@ def adminUsers():
     if not user or not user.isAdmin:
         return redirect(url_for('main.index'))
     
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+    
 
     users = User.query.order_by(User.id).all()
 
@@ -45,6 +58,11 @@ def adminUsers():
 
 @adminView.route('/admin/<int:userId>/downloads')
 def adminViewDownloads(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
     check = current_user.get_id()
     user = User.query.filter_by(id = check).first()
 
@@ -71,9 +89,89 @@ def adminViewReviews(userId):
 
     if not user or not user.isAdmin:
         return redirect(url_for('main.index'))
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     user = User.query.filter_by(id = userId).first()
 
     reviews = Review.query.filter_by(creatorId = user.id).all()
 
-    return render_template('adminUserReviews.html', user = user, reviews = reviews)
+    return render_template('admin/userreviews.html', user = user, reviews = reviews)
+
+@adminView.route('/admin/<int:userId>/suggest')
+def adminSuggestUser(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    user = User.query.filter_by(id = userId).first()
+
+    if not user:
+        render_template('admin/users.html')
+
+    return render_template('admin/suggest.html', user = user)
+
+@adminView.route('/admin/<int:userId>/suggest', methods = ['POST'])
+def adminPostSuggestion(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    user = User.query.filter_by(id = userId).first()
+
+    desc = request.form.get("description")
+
+    if not user:
+        render_template('admin/users.html')
+
+    new = Suggestion(id = assignId.get(), u = user.id, d = desc)
+    assignId.increment()
+    db.session.add(new)
+    db.session.commit()
+    
+
+    return render_template('admin/users.html', user = user)
+
+
+@adminView.route('/admin/attractions/pending')
+def adminViewPendingAttractions():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    pending = Attraction.query.filter_by(approvedFlag = False).all()
+
+    return render_template('admin/attractions.html', attractions = pending)
+
+@adminView.route('/admin/attractions')
+def adminAttractions():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    attractions = Attraction.query.order_by(Attraction.Address).all()
+
+    return render_template('admin/attractions.html', attractions = attractions)
+
+@adminView.route('/admin/suggestions')
+def adminSuggestions():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    suggestions = Suggestion.query.order_by(Suggestion.suggestionId).all()
+
+    return render_template('admin/suggestions.html', suggestions = suggestions)
