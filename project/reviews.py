@@ -7,7 +7,7 @@ from counter import Counter
 
 reviews = Blueprint('reviews', __name__)
 
-idAssign = Counter(0)
+idAssign = Counter(3)
 
 @reviews.route('/locations/<string:cityCode>/<string:address>')
 def seeReviews(cityCode, address):
@@ -31,7 +31,7 @@ def postNewReview(cityCode, address):
     city = City.query.filter_by(airportCode = cityCode).first()
     attraction = Attraction.query.filter_by(Address = address).first()
 
-    id = current_user.get_Id()
+    id = current_user.get_id()
     comment = request.form.get('comment')
     stars = request.form.get('stars')
 
@@ -40,6 +40,8 @@ def postNewReview(cityCode, address):
 
     db.session.add(new)
     db.session.commit()
+
+    reviews = Review.query.filter_by(attractionAddress = address, approvedFlag = True).all()
 
     return render_template('review/reviews.html', city = city, attraction = attraction, reviews = reviews)
 
