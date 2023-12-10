@@ -1,3 +1,4 @@
+from counter import Counter
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from app import db
 from models import Suggestion, User, Download, Schedule, Review, Attraction
@@ -5,6 +6,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 #TODO perms
 
+assignId = Counter(0)
 
 adminView = Blueprint('adminView', __name__)
 
@@ -14,17 +16,28 @@ def adminCheck():
     user = User.query.filter_by(id = check).first()
 
     if not user or not user.isAdmin:
-        return render_template('index.html')
+        return redirect(url_for('main.index'))
     
     return
 
 @adminView.route('/admin')
 def admin():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     return render_template('admin/home.html')
 
 @adminView.route('/admin/users')
 def adminUsers():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+    
 
     users = User.query.order_by(User.id).all()
 
@@ -32,6 +45,11 @@ def adminUsers():
 
 @adminView.route('/admin/<int:userId>/downloads')
 def adminViewDownloads(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     user = User.query.filter_by(id = userId).first()
 
@@ -48,6 +66,11 @@ def adminViewDownloads(userId):
 
 @adminView.route('/admin/<int:userId>/reviews')
 def adminViewReviews(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     user = User.query.filter_by(id = userId).first()
 
@@ -57,6 +80,11 @@ def adminViewReviews(userId):
 
 @adminView.route('/admin/<int:userId>/suggest')
 def adminSuggestUser(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     user = User.query.filter_by(id = userId).first()
 
@@ -67,6 +95,11 @@ def adminSuggestUser(userId):
 
 @adminView.route('/admin/<int:userId>/suggest', methods = ['POST'])
 def adminPostSuggestion(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     user = User.query.filter_by(id = userId).first()
 
@@ -75,7 +108,8 @@ def adminPostSuggestion(userId):
     if not user:
         render_template('admin/users.html')
 
-    new = Suggestion(u = user.id, d = desc)
+    new = Suggestion(id = assignId.get(), u = user.id, d = desc)
+    assignId.increment()
     db.session.add(new)
     db.session.commit()
     
@@ -85,6 +119,11 @@ def adminPostSuggestion(userId):
 
 @adminView.route('/admin/attractions/pending')
 def adminViewPendingAttractions():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     pending = Attraction.query.filter_by(approvedFlag = False).all()
 
@@ -92,7 +131,24 @@ def adminViewPendingAttractions():
 
 @adminView.route('/admin/attractions')
 def adminAttractions():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
 
     attractions = Attraction.query.order_by(Attraction.Address).all()
 
     return render_template('admin/attractions.html', attractions = attractions)
+
+@adminView.route('/admin/suggestions')
+def adminSuggestions():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    suggestions = Suggestion.query.order_by(Suggestion.suggestionId).all()
+
+    return render_template('admin/suggestions.html', suggestions = suggestions)

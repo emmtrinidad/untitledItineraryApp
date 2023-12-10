@@ -104,16 +104,19 @@ class Review(db.Model):
 
 class Suggestion(db.Model):
 
-    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
-    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    suggestionId = db.Column(db.Integer, primary_key = True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     description = db.Column(db.String(3000), nullable = False) # review is nothing without the description
 
-    def __init__(self, u, a, d):
+    def __init__(self, id, u, a, d):
+        self.suggestionId = id
         self.userId = u
         self.admin = a
         self.description = d
 
-    def __init__(self, u, d):
+    def __init__(self, id, u, d):
+        self.suggestionId = id
         self.userId = u
         self.adminId = 1 #placeholder
         self.description = d
