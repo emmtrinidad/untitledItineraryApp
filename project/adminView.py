@@ -152,6 +152,35 @@ def adminViewPendingAttractions():
 
     return render_template('admin/attractions.html', attractions = pending)
 
+@adminView.route('/admin/attractions/<string:address>/approve')
+def adminApproveAttraction(address):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    toApprove = Attraction.query.filter_by(Address = address).first()
+    toApprove.approvedFlag = True
+    db.session.commit()
+
+    return redirect(url_for('adminView.adminViewPendingAttractions'))
+
+@adminView.route('/admin/attractions/<string:address>/remove')
+def adminRemoveAttraction(address):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    toDelete = Attraction.query.filter_by(Address = address).first()
+    db.session.delete(toDelete)
+    db.session.commit()
+
+    return redirect(url_for('adminView.adminViewPendingAttractions'))
+
+
 @adminView.route('/admin/attractions')
 def adminAttractions():
     check = current_user.get_id()
@@ -175,3 +204,48 @@ def adminSuggestions():
     suggestions = Suggestion.query.order_by(Suggestion.suggestionId).all()
 
     return render_template('admin/suggestions.html', suggestions = suggestions)
+
+@adminView.route('/admin/reviews/pending')
+def adminViewPendingReviews():
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+    pending = Review.query.filter_by(approvedFlag = False).all()
+
+    return render_template('admin/userreviews.html', reviews = pending)
+
+@adminView.route('/admin/reviews/approve/<int:reviewId>')
+def adminViewApproveReview(reviewId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+
+    toApprove = Review.query.filter_by(reviewId = reviewId).first()
+
+    toApprove.approvedFlag = True
+    db.session.commit()
+
+    return redirect(url_for('adminView.adminViewPendingReviews'))
+
+@adminView.route('/admin/reviews/delete/<int:reviewId>')
+def adminViewDeleteReview(reviewId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+
+
+    toDelete = Review.query.filter_by(reviewId = reviewId).first()
+
+    db.session.delete(toDelete)
+    db.session.commit()
+
+    return redirect(url_for('adminView.adminViewPendingReviews'))
+
