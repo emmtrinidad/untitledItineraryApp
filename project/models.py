@@ -97,7 +97,8 @@ class City(db.Model):
     attractions = db.relationship('Attraction', backref = 'attraction', lazy = True)
 
 class Review(db.Model):
-    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    reviewId = db.Column(db.Integer, primary_key = True)
+    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     comment = db.Column(db.String(3000), nullable = True) #people can just leave only starred reviews
     stars = db.Column(db.Integer, nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)

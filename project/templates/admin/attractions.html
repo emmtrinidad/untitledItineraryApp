@@ -39,9 +39,9 @@
                               <td>{{row['activity']}}</td>
                               <td>{{row['approvedFlag']}}</td>
                               <td>
-                                <a>remove</a>
+                                <a href="/admin/attractions/{{row['Address']}}/remove">remove</a>
                                 {% if not row['approvedFlag']%}
-                                    <a>approve</a>
+                                    <a href="/admin/attractions/{{row['Address']}}/approve">approve</a>
                                 {% endif %} 
                             </td>
                         </tr>
