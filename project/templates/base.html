@@ -8,6 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Untitled Itinerary App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <style>
+        .search-bar{
+            display: block;
+            margin-left: 350px;
+            border-radius: 10px;
+            border-style: solid;
+            font-size: 15px;
+            height: 35px;
+            width: 650px;
+        }
+    </style>
 </head>
 
 <body>
@@ -54,6 +65,9 @@
                                 admin
                             </a> 
                             {% endif %}
+                            <a href="{{ url_for('area.locations') }}" class="navbar-item">
+                                locations
+                            </a> 
                         </div>
                     </div>
                 </div>
@@ -67,6 +81,13 @@
             </div>
         </div>
     </section>
+
+    <script>
+        function navigateToURL() {
+            var urlInput = document.querySelector(".search-bar").value;
+            window.location.href = urlInput;
+        }
+    </script>
 </body>
 
 </html>

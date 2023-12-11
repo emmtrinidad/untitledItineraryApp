@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Results</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if countries%}
+            <h2>Matching countries</h2>
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Country name</th>
+                    <th>Country language(s)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in countries %}
+                        <tr> 
+                              <th>{{row['countryName']}}</th>
+                              <td>{{row['officialLanguage']}}</td>
+                              <td><a href="/locations/{{row['countryName']}}/provinces">view</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+        {% endif %}
+
+        {% if provinces%}
+            <h2>Matching provinces</h2>
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Province name</th>
+                    <th>Climate</th>
+                    <th>Timezone</th>
+                    <th>Country name</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in provinces %}
+                        <tr> 
+                              <th>{{row['provinceName']}}</th>
+                              <td>{{row['climate']}}</td>
+                              <td>{{row['timezone']}}</td>
+                              <td>{{row['countryName']}}</td>
+                            <td><a href="/locations/{{row['countryName']}}/{{row['provinceName']}}/cities">view</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+        {% endif %}
+
+        {% if cities %}
+        <h2>Matching cities</h2>
+        <table border="1" class="dataframe">
+            <thead>
+              <tr style="text-align: right;">
+                <th>City name</th>
+                <th>Airport code</th>
+                <th>province name</th>
+                <th>Country name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for row in cities %}
+                    <tr> 
+                          <th>{{row['name']}}</th>
+                          <td>{{row['airportCode']}}</td>
+                          <td>{{row['provinceName']}}</td>
+                          <td>{{row['countryName']}}</td>
+                          <td><a href="/locations/{{row['countryName']}}/{{row['provinceName']}}/cities/{{row['airportCode']}}">view</a></td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+          
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+

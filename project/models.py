@@ -83,7 +83,7 @@ class Country(db.Model):
     cities = db.relationship('City', backref = 'country', lazy = True)
 
 class Province(db.Model):
-    provinceName = db.Column(db.Integer, primary_key = True)
+    provinceName = db.Column(db.String(200), primary_key = True)
     countryName = db.Column(db.String(200), db.ForeignKey('country.countryName'), nullable = False)
     timezone = db.Column(db.String(3), nullable = False)
     climate = db.Column(db.String(200), nullable = False)
@@ -93,7 +93,7 @@ class City(db.Model):
     airportCode = db.Column(db.String(3), primary_key = True)
     name = db.Column(db.String(200), nullable = False)
     provinceName = db.Column(db.Integer, db.ForeignKey('province.provinceName'))
-    countryName = db.Column(db.Integer, db.ForeignKey('country.countryName'))
+    countryName = db.Column(db.String(200), db.ForeignKey('country.countryName'))
     attractions = db.relationship('Attraction', backref = 'attraction', lazy = True)
 
 class Review(db.Model):
@@ -129,7 +129,7 @@ class Attraction(db.Model):
     Cost = db.Column(db.Integer, nullable = False) #rank from 0-3 in terms of free to expensive
 
     typeOfRestaurant = db.Column(db.String(), nullable = True)
-    menu = db.Column(db.String(), nullable = True) #href to link for menu
+    menu = db.Column(db.String(), nullable = True)
     activity = db.Column(db.String(50), nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
 
@@ -141,3 +141,23 @@ class Download(db.Model):
     def __init__(self, sId, uId):
         self.scheduleId = sId
         self.userId = uId
+    def __init__(self, cc, addy, name, cost, restaurantType, menu, act):
+        self.cityCode = cc
+        self.Address = addy
+        self.Name = name
+        self.Cost = cost
+        self.typeOfRestaurant = restaurantType
+        self.menu = menu
+        self.activity = act
+        self.approvedFlag = False #starts off as false
+""""
+    def __init__(self, cc, addy, name, cost, act):
+        self.cityCode = cc
+        self.Address = addy
+        self.Name = name
+        self.Cost = cost
+        self.typeOfRestaurant = None
+        self.menu = None
+        self.activity = act
+        self.approvedFlag = False
+"""

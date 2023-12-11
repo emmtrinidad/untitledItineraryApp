@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-head">
+    <nav class="navbar">
+        <div class="container">
+            <div id="navbarMenuHeroA" class="navbar-menu">
+                <div class="navbar-end">
+                    <a href="{{ url_for('area.countries') }}" class="navbar-item">
+                        Countries
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<h1 class="title">
+  Search for a location!
+</h1>
+<div>
+  <form method = "POST" action = "/search">
+    <input class="search-bar" type="text" placeholder="Search for a location" name = "search" required>
+    <button class = "btn btn-primary" type = "submit">Search</button>
+  </form>
+</div>
+{% endblock %}
