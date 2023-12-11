@@ -59,7 +59,54 @@ def city(countryName, provinceName, cityCode):
     countryQueryData(countryName)
     provinceQueryData(provinceName)
     city = cityQueryData(cityCode)
-    return render_template("area/city.html", city=city)
+    attractions = Attraction.query.filter_by(cityCode = cityCode).all()
+
+    return render_template("area/city.html", city=city, attractions = attractions)
+
+@area.route("/locations/<string:cityCode>/addattraction")
+def createAttraction(cityCode):
+
+    city = cityQueryData(cityCode)
+
+    if not city:
+        flash('an error occurred')
+        return redirect(url_for('area.locations'))
+
+    return render_template("area/addattraction.html", city=city)
+
+@area.route("/locations/<string:cityCode>/addattraction", methods = ['POST'])
+def submitAttractionRequest(cityCode):
+
+    city = cityQueryData(cityCode)
+    province = provinceQueryData(city.provinceName)
+    country = countryQueryData(city.countryName)
+
+    name = request.form.get('attractionName')
+    cost = request.form.get('cost')
+    address = request.form.get('address')
+
+    address = address.replace(" ", "") #remove all spaces
+
+    rType = request.form.get('typeOfRestaurant')
+    menu = request.form.get('menu')
+    act = request.form.get('activity')
+
+    if (menu and not rType) or (rType and not menu):
+        flash('fill in both required elements for a restaurant')
+        return render_template("area/addattraction.html", city=city)
+    
+    if any(not x.isalnum() for x in address):
+        flash('do not add special characters to the address')
+        return render_template("area/addattraction.html", city=city)
+    
+
+    new = Attraction(cc = cityCode, addy = address, name = name, cost = cost, restaurantType = rType, menu = menu, act = act)
+    db.session.add(new)
+    db.session.commit()
+
+    attractions = Attraction.query.filter_by(cityCode = cityCode).all()
+
+    return render_template("area/city.html", city=city, attractions = attractions)
 
 @area.route("/search", methods = ['POST'])
 def search():

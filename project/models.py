@@ -107,6 +107,27 @@ class Attraction(db.Model):
     Cost = db.Column(db.Integer, nullable = False) #rank from 0-3 in terms of free to expensive
 
     typeOfRestaurant = db.Column(db.String(), nullable = True)
-    menu = db.Column(db.String(), nullable = True) #href to link for menu
+    menu = db.Column(db.String(), nullable = True)
     activity = db.Column(db.String(50), nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
+
+    def __init__(self, cc, addy, name, cost, restaurantType, menu, act):
+        self.cityCode = cc
+        self.Address = addy
+        self.Name = name
+        self.Cost = cost
+        self.typeOfRestaurant = restaurantType
+        self.menu = menu
+        self.activity = act
+        self.approvedFlag = False #starts off as false
+""""
+    def __init__(self, cc, addy, name, cost, act):
+        self.cityCode = cc
+        self.Address = addy
+        self.Name = name
+        self.Cost = cost
+        self.typeOfRestaurant = None
+        self.menu = None
+        self.activity = act
+        self.approvedFlag = False
+"""
