@@ -132,12 +132,11 @@ def editEvent(eventId, schedId):
     startSeconds = startD.timestamp()
     endSeconds = endD.timestamp()
 
-    if not attraction:
-        flash('please put in an attraction')
-        return render_template('createevent.html', sched = sched)
-    
-    attrac = Attraction.query.filter_by(Address = attraction).first()
-    
+    attrac = None
+
+    if not attraction: #attraction is not needed for event
+        attrac = Attraction.query.filter_by(Address = attraction).first()
+        
     if (startSeconds < sStartSeconds) or (endSeconds > sEndSeconds):
         flash('cannot be out of the time range of the schedule')
         return render_template('createevent.html', attraction = attrac, sched = sched)
@@ -238,11 +237,10 @@ def insertEvent(schedId):
     startSeconds = startD.timestamp()
     endSeconds = endD.timestamp()
 
+    attrac = None
+
     if not attraction:
-        flash('please put in an attraction')
-        return render_template('createevent.html', sched = sched)
-    
-    attrac = Attraction.query.filter_by(Address = attraction).first()
+        attrac = Attraction.query.filter_by(Address = attraction).first()
     
     if (startSeconds < sStartSeconds) or (endSeconds > sEndSeconds):
         flash('cannot be out of the time range of the schedule')
