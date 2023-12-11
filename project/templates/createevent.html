@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Create Event</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+
+    {% if event %}
+        <form method="POST" action="/schedules/{{sched['scheduleId']}}/createevent/{{event['eventId']}}">
+    {% else %}
+
+        <form method="POST" action="/schedules/{{sched['scheduleId']}}/createevent">
+    {% endif %}
+        
+        <div class="field">
+            <div class="control">
+                <input class="input is-large" type="text" name="attraction" value = "{{attraction['Address']}}" autofocus="" readonly>
+                <a href="/schedules/{{sched['scheduleId']}}/createevent/getAttraction">Search for an attraction</a>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <input class="input is-large" type="text" name="eventName" placeholder="Event Name" autofocus="" required>
+            </div>
+        </div>
+
+        <h3>Choose a starting date</h3>
+        <div class="field">
+            <div class="control">
+                <input class="input is-large" type="datetime-local" name="sDate" required>
+            </div>
+        </div>
+
+        <h3>Choose an ending date</h3>
+        <div class="field">
+            <div class="control">
+                <input class="input is-large" type="datetime-local" name="eDate" required>
+            </div>
+        </div>
+
+        <button class="button is-block is-info is-large is-fullwidth">Create</button>
+        
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -56,9 +56,6 @@
                             <a href="{{ url_for('sched.schedules') }}" class="navbar-item">
                                 Schedules
                             </a> 
-                            <a href="{{ url_for('sched.events') }}" class="navbar-item">
-                                events
-                            </a> 
 
                             {% if current_user.isAdmin %}
                             <a href="{{ url_for('adminView.admin') }}" class="navbar-item">

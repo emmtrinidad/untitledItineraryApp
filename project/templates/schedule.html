@@ -27,16 +27,18 @@
                     <th>Start time</th>
                     <th>End time</th>
                     <th>Location</th>
+                    <th>actions</th>
                   </tr>
                 </thead>
                 <tbody>
                     {% for event in events %}
                         <tr> 
-                              <th>here is an event</th>
-                              <td>and such</td>
-                              <td><a href="schedules/{{schedule['scheduleId']/event['eventId']}}">view</a>
-                                {% if author%}<a>edit</a>{% endif%}
-                                {%if current_user.isAdmin == true or author %}<a>Delete</a>{% endif %}
+                              <th>{{event['name']}}</th>
+                              <td>{{event['startTime']}}</td>
+                              <td>{{event['endTime']}}</td>
+                              <td>{{event['location']}}</td>
+                              <td><a href="/schedules/{{schedule['scheduleId']}}/{{event['eventId']}}">edit</a>
+                                <a href="/schedules/{{schedule['scheduleId']}}/{{event['eventId']}}/remove">remove</a>
                             </td>
                         </tr>
                     {% endfor %}
