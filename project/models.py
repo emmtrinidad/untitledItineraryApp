@@ -73,7 +73,7 @@ class Country(db.Model):
     cities = db.relationship('City', backref = 'country', lazy = True)
 
 class Province(db.Model):
-    provinceCode = db.Column(db.Integer, primary_key = True)
+    provinceName = db.Column(db.String(200), primary_key = True)
     countryName = db.Column(db.String(200), db.ForeignKey('country.countryName'), nullable = False)
     timezone = db.Column(db.String(3), nullable = False)
     climate = db.Column(db.String(200), nullable = False)
@@ -82,8 +82,8 @@ class Province(db.Model):
 class City(db.Model):
     airportCode = db.Column(db.String(3), primary_key = True)
     name = db.Column(db.String(200), nullable = False)
-    provinceCode = db.Column(db.Integer, db.ForeignKey('province.provinceCode'))
-    countryName = db.Column(db.Integer, db.ForeignKey('country.countryName'))
+    provinceName = db.Column(db.Integer, db.ForeignKey('province.provinceName'))
+    countryName = db.Column(db.String(200), db.ForeignKey('country.countryName'))
     attractions = db.relationship('Attraction', backref = 'attraction', lazy = True)
 
 class Review(db.Model):
