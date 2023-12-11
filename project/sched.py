@@ -93,22 +93,87 @@ def insertSched():
 
     return redirect(url_for('sched.schedules'))
 
-@sched.route('/schedules/<int:schedId>/<int:eventId>')
+@sched.route('/schedules/<int:schedId>/<int:eventId>', methods = ['POST'])
 @login_required
 def editEvent(eventId, schedId):
 
+    event = Event.query.filter_by(eventId = eventId).first()
+
+    user = current_user.get_id()
+    user = User.query.filter_by(id = user).first()
 
     event = Event.query.filter_by(eventId = eventId).first()
-    eventAttrac = event.location
-    eventName = event.name
 
-    if current_user.get_id() != event.creatorId:
-        return url_for('main.index')
-
-    attrac = Attraction.query.filter_by(Address = eventAttrac).first()
     sched = Schedule.query.filter_by(scheduleId = schedId).first()
 
-    return render_template('createevent.html', attraction = attrac, sched = sched)
+    if not sched:
+        return redirect(url_for('main.home'))
+    
+    schedStart = sched.startDate
+    schedEnd = sched.endDate
+
+    sStartSeconds = schedStart.timestamp()
+    sEndSeconds = schedEnd.timestamp()
+
+    name = request.form.get('eventName')
+    attraction = request.form.get('attraction')
+
+    start = request.form.get('sDate')
+    end = request.form.get('eDate')
+
+    startStr = str(start)
+    endStr = str(end)
+
+    #convert to dateTime
+    dateFormat = '%Y-%m-%dT%H:%M'
+    startD = datetime.strptime(startStr, dateFormat)
+    endD = datetime.strptime(endStr, dateFormat)
+
+    startSeconds = startD.timestamp()
+    endSeconds = endD.timestamp()
+
+    if not attraction:
+        flash('please put in an attraction')
+        return render_template('createevent.html', sched = sched)
+    
+    attrac = Attraction.query.filter_by(Address = attraction).first()
+    
+    if (startSeconds < sStartSeconds) or (endSeconds > sEndSeconds):
+        flash('cannot be out of the time range of the schedule')
+        return render_template('createevent.html', attraction = attrac, sched = sched)
+
+    if  (startSeconds - endSeconds) > 1800:
+        flash('At least have half an hour between start and end time')
+        return render_template('createevent.html', attraction = attrac, sched = sched)
+    
+    events = Event.query.filter_by(scheduleId = sched.scheduleId).all()
+
+    for event in events:
+        
+        eStart = event.startTime
+        eEnd = event.endTime
+
+        eSSeconds = eStart.timestamp()
+        eESeconds = eEnd.timestamp()
+
+        if (endSeconds > eSSeconds and endSeconds < eESeconds) or (startSeconds > eESeconds and startSeconds < eESeconds):
+            flash('Overlap between events')
+            return render_template('createevent.html', attraction = attrac, sched = sched)
+
+    
+    
+    event.name = name
+    event.location = attrac.Address
+    event.startTime = startD
+    event.endTime = endD
+    event.cityCode = attrac.cityCode
+
+    db.session.commit()
+
+    events = Event.query.filter_by(scheduleId = sched.scheduleId).all()
+    
+    return render_template('schedule.html', schedule = sched, events = events)
+
 
 @sched.route('/schedules/<int:schedId>/<int:eventId>/remove')
 @login_required
