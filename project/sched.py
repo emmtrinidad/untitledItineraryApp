@@ -109,7 +109,7 @@ def insertSched():
 
     return redirect(url_for('sched.schedules'))
 
-@sched.route('/events', methods = ['POST'])
+@sched.route('/createevent', methods = ['POST'])
 def insertEvent():
 
     name = request.form.get('name')
@@ -122,9 +122,9 @@ def insertEvent():
     startSeconds = startTime.timestamp()
     endSeconds = endTime.timestamp()
 
-    if  (startTime.year == endTime.year) and (startTime.month == endTime.month) and (startTime.day == endTime.day) and (startTime.hour == endTime.hour) and ((startTime.minute - endTime.minute) > 30):
-        flash('overlap')
-        return redirect(url_for('sched.createEvent'))
+    if  (startSeconds - endSeconds) > 1800:
+        flash('At least have half an hour between start and end time')
+        return redirect(url_for('sched.createSched'))
     
     return redirect(url_for('sched.events'))
 
