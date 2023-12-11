@@ -87,10 +87,20 @@ class City(db.Model):
     attractions = db.relationship('Attraction', backref = 'attraction', lazy = True)
 
 class Review(db.Model):
-    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    reviewId = db.Column(db.Integer, primary_key = True)
+    attractionAddress = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = False)
+    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     comment = db.Column(db.String(3000), nullable = True) #people can just leave only starred reviews
     stars = db.Column(db.Integer, nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
+
+    def __init__(self, rId, addy, cId, comment, stars):
+        self.reviewId = rId
+        self.attractionAddress = addy
+        self.creatorId = cId
+        self.comment = comment
+        self.stars = stars
+        self.approvedFlag = False #upon creation is set to this
 
 class Suggestion(db.Model):
 

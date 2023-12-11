@@ -127,3 +127,4 @@ def insertEvent():
         return redirect(url_for('sched.createEvent'))
     
     return redirect(url_for('sched.events'))
+    
