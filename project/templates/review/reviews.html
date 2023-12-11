@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">{{attraction['Name']}}</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if reviews %}
+            <a href="/locations/{{city['airportCode']}}/{{attraction['Address']}}/addreview">Add a new review!</a>    
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Review Id</th>
+                    <th>User Id</th>
+                    <th>Stars</th>
+                    <th>Comment</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in reviews %}
+                        <tr> 
+                              <th>{{row['reviewId']}}</th>
+                              <td>{{row['creatorId']}}</td>
+                              <td>{{row['comment']}}</td>
+                              <td>{{row['stars']}}</td>
+                              <td>
+                                {% if current_user.getId == row['creatorId'] %}<a>edit review</a>{% endif %}
+                                {% if current_user.is_authenticated %}<a>add review</a>{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+
+        {% else %}
+            <h3>No reviews</h3>
+            <a href="/locations/{{city['airportCode']}}/{{attraction['Address']}}/addreview">Make one</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

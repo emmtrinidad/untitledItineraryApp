@@ -83,7 +83,7 @@ class Country(db.Model):
     cities = db.relationship('City', backref = 'country', lazy = True)
 
 class Province(db.Model):
-    provinceCode = db.Column(db.Integer, primary_key = True)
+    provinceName = db.Column(db.String(200), primary_key = True)
     countryName = db.Column(db.String(200), db.ForeignKey('country.countryName'), nullable = False)
     timezone = db.Column(db.String(3), nullable = False)
     climate = db.Column(db.String(200), nullable = False)
@@ -92,23 +92,44 @@ class Province(db.Model):
 class City(db.Model):
     airportCode = db.Column(db.String(3), primary_key = True)
     name = db.Column(db.String(200), nullable = False)
-    provinceCode = db.Column(db.Integer, db.ForeignKey('province.provinceCode'))
-    countryName = db.Column(db.Integer, db.ForeignKey('country.countryName'))
+    provinceName = db.Column(db.Integer, db.ForeignKey('province.provinceName'))
+    countryName = db.Column(db.String(200), db.ForeignKey('country.countryName'))
     attractions = db.relationship('Attraction', backref = 'attraction', lazy = True)
 
 class Review(db.Model):
-    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    reviewId = db.Column(db.Integer, primary_key = True)
+    attractionAddress = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = False)
+    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     comment = db.Column(db.String(3000), nullable = True) #people can just leave only starred reviews
     stars = db.Column(db.Integer, nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
 
+    def __init__(self, rId, addy, cId, comment, stars):
+        self.reviewId = rId
+        self.attractionAddress = addy
+        self.creatorId = cId
+        self.comment = comment
+        self.stars = stars
+        self.approvedFlag = False #upon creation is set to this
+
 class Suggestion(db.Model):
 
-    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
-    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
-    user = db.relationship("User", foreign_keys=[userId])
-    admin = db.relationship("User", foreign_keys=[adminId])
+    suggestionId = db.Column(db.Integer, primary_key = True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     description = db.Column(db.String(3000), nullable = False) # review is nothing without the description
+
+    def __init__(self, id, u, a, d):
+        self.suggestionId = id
+        self.userId = u
+        self.admin = a
+        self.description = d
+
+    def __init__(self, id, u, d):
+        self.suggestionId = id
+        self.userId = u
+        self.adminId = 1 #placeholder
+        self.description = d
 
 class Attraction(db.Model):
     cityCode = db.Column(db.String, db.ForeignKey('city.airportCode'), nullable = False)
@@ -117,6 +138,35 @@ class Attraction(db.Model):
     Cost = db.Column(db.Integer, nullable = False) #rank from 0-3 in terms of free to expensive
 
     typeOfRestaurant = db.Column(db.String(), nullable = True)
-    menu = db.Column(db.String(), nullable = True) #href to link for menu
+    menu = db.Column(db.String(), nullable = True)
     activity = db.Column(db.String(50), nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
+
+class Download(db.Model):
+
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), primary_key = True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+
+    def __init__(self, sId, uId):
+        self.scheduleId = sId
+        self.userId = uId
+    def __init__(self, cc, addy, name, cost, restaurantType, menu, act):
+        self.cityCode = cc
+        self.Address = addy
+        self.Name = name
+        self.Cost = cost
+        self.typeOfRestaurant = restaurantType
+        self.menu = menu
+        self.activity = act
+        self.approvedFlag = False #starts off as false
+""""
+    def __init__(self, cc, addy, name, cost, act):
+        self.cityCode = cc
+        self.Address = addy
+        self.Name = name
+        self.Cost = cost
+        self.typeOfRestaurant = None
+        self.menu = None
+        self.activity = act
+        self.approvedFlag = False
+"""

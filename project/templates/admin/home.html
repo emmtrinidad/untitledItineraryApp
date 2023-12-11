@@ -1,8 +1,38 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="hero-head">
+    <nav class="navbar">
+        <div class="container">
+            <div id="navbarMenuHeroA" class="navbar-menu">
+                <div class="navbar-end">
+                    <a href = "{{url_for('adminView.adminUsers')}}" class="navbar-item">
+                        View users
+                    </a>
+
+                    <a class="navbar-item">
+                        View schedules
+                    </a>
+                    <a  href="" class="navbar-item">
+                        View pending reviews
+                    </a>
+                    
+                    <a href = "{{url_for('adminView.adminViewPendingAttractions')}}" class="navbar-item">
+                        View pending attractions
+                    </a>
+
+                    <a href="{{url_for('adminView.adminSuggestions')}}" class="navbar-item">
+                        view all suggestions
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Schedules</h3>
+    <h3 class="title">Admin page</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -13,7 +43,8 @@
         {% endwith %}
         
         {% if schedules%}
-            <a href="/createschedule"> make new schedule</a>    
+            <a href="/schedules"> Download new schedules!</a>    
+            <h3>counter at {{count}}</h3>
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
@@ -33,9 +64,7 @@
                               <td>{{row['scheduleId']}}</td>
                               <td>{{row['startDate']}}</td>
                               <td>{{row['endDate']}}</td>
-                              <td><a href="schedules/{{row['scheduleId']}}">view</a>
-                                {% if current_user.is_authenticated %} <a href="downloadschedule/{{row['scheduleId']}}">Download</a> {% endif %}
-                                </td>
+                              <td><a href="schedules/{{row['scheduleId']}}">view</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -44,7 +73,7 @@
 
         {% else %}
             <h3>schedules is empty</h3>
-            <a href="/createschedule">why not make one?</a>
+            <a href="/schedules">Download new schedules!</a>
         {% endif %}
     </div>
 </div>

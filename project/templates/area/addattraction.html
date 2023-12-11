@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Add new attraction</h3>
+    <h3>If the attraction is not a restaurant, the type and menu do not have to be filled.</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/locations/{{city['airportCode']}}/addattraction">
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="cityName" value="{{city['name']}}" autofocus="" readonly>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="attractionName" placeholder="Attraction name" autofocus="" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="address" placeholder="address (NO SPECIAL CHARACTERS)" autofocus="" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="number" min = "0" name="cost" placeholder="Cost (put in an estimate)" autofocus="" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="typeOfRestaurant" placeholder="Type(s) of restaurant" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="menu" placeholder="Menu" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="activity" placeholder="Activity" autofocus="" required>
+                </div>
+            </div>
+
+            <button class="button is-block is-info is-large is-fullwidth">Submit!</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

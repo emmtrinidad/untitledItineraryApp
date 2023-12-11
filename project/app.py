@@ -25,6 +25,14 @@ app.register_blueprint(main_blueprint)
 from sched import sched as sched_blueprint
 app.register_blueprint(sched_blueprint)
 
+from adminView import adminView as adminView_blueprint
+app.register_blueprint(adminView_blueprint)
+from area import area as area_blueprint
+app.register_blueprint(area_blueprint)
+
+from reviews import reviews as reviews_blueprint
+app.register_blueprint(reviews_blueprint)
+
 app.app_context().push()
 db.create_all()
 
