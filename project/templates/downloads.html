@@ -34,7 +34,10 @@
                               <td>{{row['scheduleId']}}</td>
                               <td>{{row['startDate']}}</td>
                               <td>{{row['endDate']}}</td>
-                              <td><a href="schedules/{{row['scheduleId']}}">view</a></td>
+                              <td>
+                                <a href="schedules/{{row['scheduleId']}}">view</a>
+                                <a>remove</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

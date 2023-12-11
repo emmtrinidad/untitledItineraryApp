@@ -35,6 +35,7 @@
                               <td>{{row['endDate']}}</td>
                               <td><a href="schedules/{{row['scheduleId']}}">view</a>
                                 {% if current_user.is_authenticated %} <a href="downloadschedule/{{row['scheduleId']}}">Download</a> {% endif %}
+                                {% if current_user.isAdmin == true %}<a>Delete</a>{% endif %}
                                 </td>
                         </tr>
                     {% endfor %}

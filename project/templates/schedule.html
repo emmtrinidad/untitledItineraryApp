@@ -19,7 +19,7 @@
         {% endwith %}
         
         {% if events %}
-            <a href="/schedules/{{schedule['scheduleId']}}/createevent"> add new event</a>    
+            {% if author %}<a href="/schedules/{{schedule['scheduleId']}}/createevent"> add new event</a> {% endif %}
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
@@ -34,7 +34,10 @@
                         <tr> 
                               <th>here is an event</th>
                               <td>and such</td>
-                              <td><a href="schedules/{{schedule['scheduleId']/event['eventId']}}">view</a></td>
+                              <td><a href="schedules/{{schedule['scheduleId']/event['eventId']}}">view</a>
+                                {% if author%}<a>edit</a>{% endif%}
+                                {%if current_user.isAdmin == true or author %}<a>Delete</a>{% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -42,8 +45,8 @@
               
 
         {% else %}
-            <h3>event is empty</h3>
-            <a href="/schedules/{{schedule['scheduleId']}}/createevent">why not make one?</a>
+            <h3>no events in schedule</h3>
+            {% if author %} <a href="/schedules/{{schedule['scheduleId']}}/createevent">why not make one?</a>{% endif %}
         {% endif %}
     </div>
 </div>
