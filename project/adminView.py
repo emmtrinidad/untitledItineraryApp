@@ -175,6 +175,11 @@ def adminRemoveAttraction(address):
         return redirect(url_for('main.index'))
 
     toDelete = Attraction.query.filter_by(Address = address).first()
+
+    if not toDelete:
+        return redirect(url_for('adminView.adminViewPendingAttractions'))
+
+
     db.session.delete(toDelete)
     db.session.commit()
 

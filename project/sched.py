@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from app import db
-from models import Download, User, Schedule, Event
+from models import Attraction, Download, User, Schedule, Event
 from datetime import datetime
 from counter import Counter
 
@@ -12,7 +12,7 @@ sched = Blueprint('sched', __name__)
 
 scheduleAssign = Counter(50003)
 #not sure if needed, keep for now
-eventAssign = Counter(60000)
+eventAssign = Counter(60002)
 
 
 @sched.route('/schedules')
@@ -34,22 +34,6 @@ def scheduleAtId(param):
 
     return render_template('schedule.html', schedule = sched, events = evnts)
 
-#get all events
-@sched.route('/events')
-def events():
-    return render_template('events.html')
-
-@sched.route('/schedules/<int:schedId>/createevent')
-def createEvent(schedId):
-
-    schedule = Schedule.query.filter_by(scheduleId=schedId).first()
-
-    if not schedule:
-        flash(Markup('schedule does not exist. why not try checking out <a href = "/schedules" class="alert-link"> the currently available ones? </a>'))
-        return 'schedule no exist'
-
-
-    return render_template('createevent.html')
 
 @sched.route('/createschedule')
 def createSched():
@@ -109,24 +93,168 @@ def insertSched():
 
     return redirect(url_for('sched.schedules'))
 
-@sched.route('/createevent', methods = ['POST'])
-def insertEvent():
+@sched.route('/schedules/<int:schedId>/<int:eventId>')
+@login_required
+def editEvent(eventId, schedId):
 
-    name = request.form.get('name')
-    activity = request.form.get('activity')
-    #get attractionID through some kind of search
 
-    startTime = request.form.get('st')
-    endTime = request.form.get('et')
+    event = Event.query.filter_by(eventId = eventId).first()
+    eventAttrac = event.location
+    eventName = event.name
 
-    startSeconds = startTime.timestamp()
-    endSeconds = endTime.timestamp()
+    if current_user.get_id() != event.creatorId:
+        return url_for('main.index')
+
+    attrac = Attraction.query.filter_by(Address = eventAttrac).first()
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+
+    return render_template('createevent.html', attraction = attrac, sched = sched)
+
+@sched.route('/schedules/<int:schedId>/<int:eventId>/remove')
+@login_required
+def deleteEvent(eventId, schedId):
+
+    user = current_user.get_id()
+    user = User.query.filter_by(id = user).first()
+
+    event = Event.query.filter_by(eventId = eventId).first()
+
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+
+    if not sched:
+        return redirect(url_for('main.index'))
+
+    if not event:
+        return render_template('schedule.html', schedule = sched)
+
+    eventAttrac = event.location
+    eventName = event.name
+
+    if user.id != event.creatorId or not user.isAdmin:
+        return url_for('main.index')
+
+    attrac = Attraction.query.filter_by(Address = eventAttrac).first()
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+
+    db.session.delete(event)
+    db.session.commit()
+
+    return render_template('schedule.html', sched = sched)
+
+@sched.route('/schedules/<int:schedId>/createevent', methods = ['POST'])
+@login_required 
+def insertEvent(schedId):
+
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+
+    if not sched:
+        return redirect(url_for('main.home'))
+    
+    schedStart = sched.startDate
+    schedEnd = sched.endDate
+
+    sStartSeconds = schedStart.timestamp()
+    sEndSeconds = schedEnd.timestamp()
+
+    name = request.form.get('eventName')
+    attraction = request.form.get('attraction')
+
+    start = request.form.get('sDate')
+    end = request.form.get('eDate')
+
+    startStr = str(start)
+    endStr = str(end)
+
+    #convert to dateTime
+    dateFormat = '%Y-%m-%dT%H:%M'
+    startD = datetime.strptime(startStr, dateFormat)
+    endD = datetime.strptime(endStr, dateFormat)
+
+    startSeconds = startD.timestamp()
+    endSeconds = endD.timestamp()
+
+    if not attraction:
+        flash('please put in an attraction')
+        return render_template('createevent.html', sched = sched)
+    
+    attrac = Attraction.query.filter_by(Address = attraction).first()
+    
+    if (startSeconds < sStartSeconds) or (endSeconds > sEndSeconds):
+        flash('cannot be out of the time range of the schedule')
+        return render_template('createevent.html', attraction = attrac, sched = sched)
 
     if  (startSeconds - endSeconds) > 1800:
         flash('At least have half an hour between start and end time')
-        return redirect(url_for('sched.createSched'))
+        return render_template('createevent.html', attraction = attrac, sched = sched)
     
-    return redirect(url_for('sched.events'))
+    events = Event.query.filter_by(scheduleId = sched.scheduleId).all()
+
+    for event in events:
+        
+        eStart = event.startTime
+        eEnd = event.endTime
+
+        eSSeconds = eStart.timestamp()
+        eESeconds = eEnd.timestamp()
+
+        if (endSeconds > eSSeconds and endSeconds < eESeconds) or (startSeconds > eESeconds and startSeconds < eESeconds):
+            flash('Overlap between events')
+            return render_template('createevent.html', attraction = attrac, sched = sched)
+
+    
+    
+    new = Event(name, eventAssign.get(), current_user.get_id(), schedId, startD, endD, attrac.Address, attrac.cityCode)
+
+    db.session.add(new)
+    db.session.commit()
+
+    events = Event.query.filter_by(scheduleId = sched.scheduleId).all()
+    
+    return render_template('schedule.html', schedule = sched, events = events)
+
+@sched.route('/schedules/<int:schedId>/createevent')
+@login_required
+def createEvent(schedId):
+
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+
+    if not sched:
+        return redirect(url_for('main.home'))
+
+    return render_template('createevent.html', sched = sched)
+
+@sched.route('/schedules/<int:schedId>/createevent/getAttraction')
+@login_required 
+def createEventGetAttraction(schedId):
+
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+
+    if not sched:
+        return redirect(url_for('main.home'))
+
+    return render_template('eventsearch/attractionsearch.html', sched = sched)
+
+@sched.route('/schedules/<int:schedId>/createevent/getAttraction', methods = ['POST'])
+@login_required 
+def createEventSearchedAttraction(schedId):
+
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+
+    if not sched:
+        return redirect(url_for('main.home'))
+    
+    check = request.form.get('search')
+    attrac = Attraction.query.filter(Attraction.Name.contains(check)).all()
+
+    return render_template('eventsearch/attractionresults.html', attractions = attrac, sched = sched)
+
+@sched.route('/schedules/<int:schedId>/createevent/getAttraction/<string:address>')
+def createEventAttractionSelected(schedId, address):
+
+    sched = Schedule.query.filter_by(scheduleId = schedId).first()
+    attraction = Attraction.query.filter_by(Address = address).first()
+
+    return render_template('createevent.html', attraction = attraction, sched = sched)
 
 @sched.route('/downloads')
 @login_required #user needs to be logged in in order to actually check downloads

@@ -59,15 +59,17 @@ class Schedule(db.Model):
         self.endDate = endD
 
 class Event(db.Model):
+    name = db.Column(db.String(300), nullable = False)
     eventId = db.Column(db.Integer, primary_key = True)
-    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'))
-    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'))
+    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), nullable = False)
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
     location = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = True) #does not always need set location
     cityCode = db.Column(db.String(3), db.ForeignKey('city.airportCode'))
 
-    def __init__(self, eId, cId, sId, startTime, endTime, location, city):
+    def __init__(self, name, eId, cId, sId, startTime, endTime, location, city):
+        self.name = name
         self.eventId = eId
         self.creatorId = cId
         self.scheduleId = sId
