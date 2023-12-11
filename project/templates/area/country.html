@@ -1,1 +1,30 @@
 {% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">{{country["countryName"]}}</h3>
+
+    <div class="box">
+        <table border="1" class="dataframe">
+            <thead>
+              <tr style="text-align: right;">
+                <th>Province</th>
+                <th>Country</th>
+                <th>Timezone</th>
+                <th>Climate</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for row in provinces %}
+                    <tr> 
+                          <th>{{row['provinceName']}}</th>
+                          <td>{{row['countryName']}}</td>
+                          <td>{{row['timezone']}}</td>
+                          <td>{{row['climate']}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>
+{% endblock %}
