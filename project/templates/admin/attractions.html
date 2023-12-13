@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Attractions in {{city['name']}}</h3>
+    <h3 class="title">Attractions</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -12,33 +12,37 @@
         {% endif %}
         {% endwith %}
         
-        {% if attractions %}
-            <a href="/locations/{{city['airportCode']}}/addattraction">Request to add new attraction</a>    
-            <h3>counter at {{count}}</h3>
+        {% if attractions%}
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
-                    <th>Attraction name</th>
-                    <th>Address</th>
-                    <th>Cost</th>
-                    <th>Type of restaurant</th>
-                    <th>Menu</th>
-                    <th>Activity</th>
-                    <th>Actions</th>
+                    <th>city code</th>
+                    <th>address</th>
+                    <th>name</th>
+                    <th>cost</th>
+                    <th>type of restaurant</th>
+                    <th>menu</th>
+                    <th>activity</th>
+                    <th>approved</th>
+                    <th>actions</th>
                   </tr>
                 </thead>
                 <tbody>
                     {% for row in attractions %}
                         <tr> 
-                              <th>{{row['Name']}}</th>
+                              <th>{{row['cityCode']}}</th>
                               <td>{{row['Address']}}</td>
+                              <td>{{row['Name']}}</td>
                               <td>{{row['Cost']}}</td>
-                              <td>{{row['typeOfRestaurant']}}</td>
+                              <th>{{row['typeOfRestaurant']}}</th>
                               <td>{{row['menu']}}</td>
                               <td>{{row['activity']}}</td>
+                              <td>{{row['approvedFlag']}}</td>
                               <td>
-                                <a href="/locations/{{city['airportCode']}}/{{row['Address']}}">View reviews</a>
-                                {% if current_user.is_authenticated %}<a>add review</a>{% endif %}
+                                <a href="/admin/attractions/{{row['Address']}}/remove">remove</a>
+                                {% if not row['approvedFlag']%}
+                                    <a href="/admin/attractions/{{row['Address']}}/approve">approve</a>
+                                {% endif %} 
                             </td>
                         </tr>
                     {% endfor %}
@@ -47,8 +51,7 @@
               
 
         {% else %}
-            <h3>attractions is empty</h3>
-            <a href="/locations/{{city['airportCode']}}/addattraction">why not make one?</a>
+            <h3>nothing yet</h3>
         {% endif %}
     </div>
 </div>

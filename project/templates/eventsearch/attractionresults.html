@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h2>Search again</h2>
+    <div>
+        <form method = "POST" action = "/schedules/{{sched['scheduleId']}}/createevent/getAttraction">
+        <input class="search-bar" type="text" placeholder="Search for a location" name = "search" required>
+        <button class = "btn btn-primary" type = "submit">Search</button>
+        </form>
+    </div>
+    <h3 class="title">Results</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if attractions %}
+        
+            <h2>Matching attractions</h2>
+            <table border="1" class="dataframe">
+                <thead>
+                <tr style="text-align: right;">
+                    <th>Attraction name</th>
+                    <th>Address</th>
+                    <th>Cost</th>
+                    <th>Type of restaurant</th>
+                    <th>Menu</th>
+                    <th>Activity</th>
+                    <th>City code</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for row in attractions %}
+                            <tr> 
+                                <th>{{row['Name']}}</th>
+                                <td>{{row['Address']}}</td>
+                                <td>{{row['Cost']}}</td>
+                                <td>{{row['typeOfRestaurant']}}</td>
+                                <td>{{row['menu']}}</td>
+                                <td>{{row['Activity']}}</td>
+                                <td>{{row['cityCode']}}</td>
+
+                                <td><a href="/schedules/{{sched['scheduleId']}}/createevent/getAttraction/{{row['Address']}}">Select</a></td>
+                            </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          
+
+        {% else %}
+            <h2>Nothing here, try searching again!</h2>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+

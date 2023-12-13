@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Schedules</h3>
+    <h3 class="title">{{user['firstName']}} downloads</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -13,7 +13,6 @@
         {% endwith %}
         
         {% if schedules%}
-            <a href="/createschedule"> make new schedule</a>    
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
@@ -33,10 +32,7 @@
                               <td>{{row['scheduleId']}}</td>
                               <td>{{row['startDate']}}</td>
                               <td>{{row['endDate']}}</td>
-                              <td><a href="schedules/{{row['scheduleId']}}">view</a>
-                                {% if current_user.is_authenticated %} <a href="downloadschedule/{{row['scheduleId']}}">Download</a> {% endif %}
-                                {% if current_user.isAdmin == true %}<a>Delete</a>{% endif %}
-                                </td>
+                              <td><a href="schedules/{{row['scheduleId']}}">view</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -44,8 +40,7 @@
               
 
         {% else %}
-            <h3>schedules is empty</h3>
-            <a href="/createschedule">why not make one?</a>
+            <h3>{{user['firstName']}} has no downloads.</h3>
         {% endif %}
     </div>
 </div>

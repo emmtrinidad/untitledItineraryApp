@@ -22,7 +22,17 @@ class User(UserMixin, db.Model):
         self.phone_no = phoneNo 
         self.password = pwd
 
+    #delete this later - used for testing purposes currently
     def __init__(self, fname, email, pwd):
+        self.id = 0
+        self.firstName = fname
+        self.email = email
+        self.password = pwd
+
+        self.isAdmin = False
+
+    def __init__(self, id, fname, email, pwd):
+        self.id = id
         self.firstName = fname
         self.email = email
         self.password = pwd
@@ -49,15 +59,17 @@ class Schedule(db.Model):
         self.endDate = endD
 
 class Event(db.Model):
+    name = db.Column(db.String(300), nullable = False)
     eventId = db.Column(db.Integer, primary_key = True)
-    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'))
-    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'))
+    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), nullable = False)
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
     location = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = True) #does not always need set location
     cityCode = db.Column(db.String(3), db.ForeignKey('city.airportCode'))
 
-    def __init__(self, eId, cId, sId, startTime, endTime, location, city):
+    def __init__(self, name, eId, cId, sId, startTime, endTime, location, city):
+        self.name = name
         self.eventId = eId
         self.creatorId = cId
         self.scheduleId = sId
@@ -87,18 +99,39 @@ class City(db.Model):
     attractions = db.relationship('Attraction', backref = 'attraction', lazy = True)
 
 class Review(db.Model):
-    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    reviewId = db.Column(db.Integer, primary_key = True)
+    attractionAddress = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = False)
+    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     comment = db.Column(db.String(3000), nullable = True) #people can just leave only starred reviews
     stars = db.Column(db.Integer, nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
 
+    def __init__(self, rId, addy, cId, comment, stars):
+        self.reviewId = rId
+        self.attractionAddress = addy
+        self.creatorId = cId
+        self.comment = comment
+        self.stars = stars
+        self.approvedFlag = False #upon creation is set to this
+
 class Suggestion(db.Model):
 
-    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
-    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
-    user = db.relationship("User", foreign_keys=[userId])
-    admin = db.relationship("User", foreign_keys=[adminId])
+    suggestionId = db.Column(db.Integer, primary_key = True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     description = db.Column(db.String(3000), nullable = False) # review is nothing without the description
+
+    def __init__(self, id, u, a, d):
+        self.suggestionId = id
+        self.userId = u
+        self.admin = a
+        self.description = d
+
+    def __init__(self, id, u, d):
+        self.suggestionId = id
+        self.userId = u
+        self.adminId = 1 #placeholder
+        self.description = d
 
 class Attraction(db.Model):
     cityCode = db.Column(db.String, db.ForeignKey('city.airportCode'), nullable = False)
@@ -111,6 +144,14 @@ class Attraction(db.Model):
     activity = db.Column(db.String(50), nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
 
+class Download(db.Model):
+
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), primary_key = True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+
+    def __init__(self, sId, uId):
+        self.scheduleId = sId
+        self.userId = uId
     def __init__(self, cc, addy, name, cost, restaurantType, menu, act):
         self.cityCode = cc
         self.Address = addy
