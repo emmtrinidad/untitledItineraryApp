@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">{{province["provinceName"]}}</h3>
+
+    <div class="box">
+        <table border="1" class="dataframe">
+            <thead>
+              <tr style="text-align: right;">
+                <th>Country</th>
+                <th>Province</th>
+                <th>City</th>
+                <th>Airport Code</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for row in cities %}
+                    <tr> 
+                        <td>{{row['countryName']}}</td>
+                        <td>{{row['provinceName']}}</td>
+                        <td>{{row['name']}}</td>
+                        <th>{{row['airportCode']}}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>
+{% endblock %}

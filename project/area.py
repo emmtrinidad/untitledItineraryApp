@@ -25,14 +25,15 @@ def country(countryName):
     if not country:
         return 'no countries but it works'  
     
-    return render_template('area/country.html', country = country)
-
-@area.route("/locations/<string:countryName>/provinces")
-def provinces(countryName):
-    countryQueryData(countryName)
-
     provinces = Province.query.order_by(Province.provinceName).all()
-    return render_template("area/provinces.html", provinces=provinces)
+    return render_template('area/country.html', country = country, provinces=provinces)
+
+# @area.route("/locations/<string:countryName>/provinces")
+# def provinces(countryName):
+#     countryQueryData(countryName)
+
+#     provinces = Province.query.order_by(Province.provinceName).all()
+#     return render_template("area/provinces.html", provinces=provinces)
 
 @area.route("/locations/<string:countryName>/provinces/<string:provinceName>")
 def province(countryName, provinceName):
@@ -42,17 +43,18 @@ def province(countryName, provinceName):
 
     if not province:
         flash('province does not exist')
-        return redirect(url_for('area.provinces(countryName)'))
+        return redirect(url_for("area.country", countryName=countryName))
     
-    return render_template("area/province.html", province=province)
-
-@area.route("/locations/<string:countryName>/<string:provinceName>/cities")
-def cities(countryName, provinceName):
-    countryQueryData(countryName)
-    provinceQueryData(provinceName)
-
     cities = City.query.order_by(City.name).all()
-    return render_template("area/cities.html", cities=cities)
+    return render_template("area/province.html", province=province, cities=cities)
+
+# @area.route("/locations/<string:countryName>/<string:provinceName>/cities")
+# def cities(countryName, provinceName):
+#     countryQueryData(countryName)
+#     provinceQueryData(provinceName)
+
+#     cities = City.query.order_by(City.name).all()
+#     return render_template("area/cities.html", cities=cities)
 
 @area.route("/locations/<string:countryName>/<string:provinceName>/cities/<string:cityCode>")
 def city(countryName, provinceName, cityCode):
