@@ -35,7 +35,7 @@ def province(countryName, provinceName):
 
     if not province:
         flash('province does not exist')
-        return redirect(url_for('area.provinces(countryName)'))
+        return redirect(url_for("area.country", countryName=countryName))
     
     return render_template("area/province.html", province=province)
 
