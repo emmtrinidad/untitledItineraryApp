@@ -17,22 +17,15 @@ def countries():
 
     return render_template('area/countries.html', countries = countries)
 
-@area.route('/locations/countries/<string:countryName>')
-def country(countryName):
-
+@area.route("/locations/<string:countryName>/provinces")
+def provinces(countryName):
     country = countryQueryData(countryName)
 
     if not country:
-        return 'no countries but it works'  
-    
-    return render_template('area/country.html', country = country)
+        redirect(url_for('main.index'))
 
-@area.route("/locations/<string:countryName>/provinces")
-def provinces(countryName):
-    countryQueryData(countryName)
-
-    provinces = Province.query.order_by(Province.provinceName).all()
-    return render_template("area/provinces.html", provinces=provinces)
+    provinces = Province.query.filter_by(countryName = countryName).all()
+    return render_template("area/country.html", country = country, provinces=provinces)
 
 @area.route("/locations/<string:countryName>/provinces/<string:provinceName>")
 def province(countryName, provinceName):
@@ -48,11 +41,11 @@ def province(countryName, provinceName):
 
 @area.route("/locations/<string:countryName>/<string:provinceName>/cities")
 def cities(countryName, provinceName):
-    countryQueryData(countryName)
-    provinceQueryData(provinceName)
+    city = countryQueryData(countryName)
+    province = provinceQueryData(provinceName)
 
-    cities = City.query.order_by(City.name).all()
-    return render_template("area/cities.html", cities=cities)
+    cities = City.query.filter_by(provinceName = provinceName).all()
+    return render_template("area/cities.html", province = province, cities=cities)
 
 @area.route("/locations/<string:countryName>/<string:provinceName>/cities/<string:cityCode>")
 def city(countryName, provinceName, cityCode):

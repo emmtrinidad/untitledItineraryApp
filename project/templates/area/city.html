@@ -14,7 +14,6 @@
         
         {% if attractions %}
             <a href="/locations/{{city['airportCode']}}/addattraction">Request to add new attraction</a>    
-            <h3>counter at {{count}}</h3>
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
@@ -29,6 +28,7 @@
                 </thead>
                 <tbody>
                     {% for row in attractions %}
+                    {% if row['approvedFlag']%}
                         <tr> 
                               <th>{{row['Name']}}</th>
                               <td>{{row['Address']}}</td>
@@ -41,6 +41,7 @@
                                 {% if current_user.is_authenticated %}<a>add review</a>{% endif %}
                             </td>
                         </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
               </table>

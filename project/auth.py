@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from app import db
-from models import User
+from models import Schedule, User, Download, Suggestion
 from flask_login import login_user, login_required, logout_user, current_user
 from counter import Counter
+from sqlalchemy.sql import union
 
-assignUserId = Counter(0)
+assignUserId = Counter(3) #used for assigning ids
+
 
 auth = Blueprint('auth', __name__)
 
@@ -89,6 +91,39 @@ def editProfile():
     db.session.commit()         #save new changes
 
     return render_template('profile.html')
+
+
+@auth.route('/downloads/<int:userId>/<int:scheduleId>/remove')
+@login_required
+def deleteDownload(userId, scheduleId):
+
+    downloads = Download.query.filter_by(scheduleId = scheduleId).all()
+    toDelete = None
+
+    for download in downloads:
+        
+        if download.userId == userId:
+            toDelete = download
+
+    if not toDelete:
+        flash('test')
+        return redirect(url_for('sched.getDownloads'))
+    
+    db.session.delete(toDelete)
+    db.session.commit
+
+    return redirect(url_for('sched.getDownloads'))
+
+@auth.route('/suggestions/<int:id>')
+@login_required
+def suggestions(id):
+
+    if not current_user.isAdmin or current_user.get_id() != id:
+        redirect(url_for('main.index'))
+
+    suggestions = Suggestion.query.filter_by(userId = current_user.get_id()).all()
+
+    return render_template('admin/suggestions.html', suggestions = suggestions)
 
 @auth.route('/logout')
 @login_required

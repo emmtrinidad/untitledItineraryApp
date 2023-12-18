@@ -2,7 +2,11 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
+{% if not event %}
     <h3 class="title">Create Event</h3>
+{% else %}    
+    <h3 class="title">Edit event</h3>
+{% endif %}
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -13,12 +17,13 @@
         {% endwith %}
 
     {% if event %}
-        <form method="POST" action="/schedules/{{sched['scheduleId']}}/createevent/{{event['eventId']}}">
+        <form method="POST" action="/schedules/{{sched['scheduleId']}}/{{event['eventId']}}">
     {% else %}
 
         <form method="POST" action="/schedules/{{sched['scheduleId']}}/createevent">
     {% endif %}
         
+    {% if attraction%}
         <div class="field">
             <div class="control">
                 <input class="input is-large" type="text" name="attraction" value = "{{attraction['Address']}}" autofocus="" readonly>
@@ -26,28 +31,60 @@
             </div>
         </div>
 
+    {% else %}
         <div class="field">
             <div class="control">
+            {% if event %}
+                <input class="input is-large" type="text" name="attraction" placeholder="Search for me!" name = "{{event['location']}}"autofocus="" readonly>
+            {% else %}
+                <input class="input is-large" type="text" name="attraction" placeholder="Search for me!" autofocus="" readonly>
+            {% endif %}
+                <a href="/schedules/{{sched['scheduleId']}}/createevent/getAttraction">Search for an attraction</a>
+            </div>
+        </div>
+
+
+    {% endif %}
+        <div class="field">
+            <div class="control">
+            {% if event %}
+                <input class="input is-large" type="text" name="eventName" placeholder="Event Name" value = "{{event['name']}}"autofocus="" required>
+            {% else %}
                 <input class="input is-large" type="text" name="eventName" placeholder="Event Name" autofocus="" required>
+
+            {% endif %}
+            
             </div>
         </div>
 
         <h3>Choose a starting date</h3>
         <div class="field">
             <div class="control">
+            {% if event %}
+                <input class="input is-large" type="datetime-local" name="sDate" value = "{{event['startDate']}}"required>
+            {% else %}
                 <input class="input is-large" type="datetime-local" name="sDate" required>
+            {% endif%}
+
             </div>
         </div>
 
         <h3>Choose an ending date</h3>
         <div class="field">
             <div class="control">
+            {% if event %}
+                <input class="input is-large" type="datetime-local" name="eDate" value = "{{event['endDate']}}"required>
+            {% else %}
                 <input class="input is-large" type="datetime-local" name="eDate" required>
+            {% endif%}
             </div>
         </div>
 
+    {% if event %}
+        <button class="button is-block is-info is-large is-fullwidth">Update</button>
+    {% else %}
         <button class="button is-block is-info is-large is-fullwidth">Create</button>
-        
+    {% endif %}    
         </form>
     </div>
 </div>

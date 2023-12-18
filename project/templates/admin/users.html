@@ -32,12 +32,12 @@
                               <td>{{row['firstName']}}</td>
                               <td>{{row['lastName']}}</td>
                               <td>{{row['email']}}</td>
-                              <td>{{row['phoneNo']}}</td>
+                              <td>{{row['phone_no']}}</td>
                               <td>{{row['password']}}</td>
                               <td>
                                 <a href="/admin/{{row['id']}}/suggest">suggest</a>
-                                <a>view downloads</a>
-                                <a>view reviews</a>
+                                <a href="/admin/{{row['id']}}/downloads">view downloads</a>
+                                <a href="/admin/{{row['id']}}/reviews">view reviews</a>
                             </td>
                         </tr>
                     {% endfor %}

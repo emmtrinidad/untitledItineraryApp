@@ -7,8 +7,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 #TODO split up code into multiple files
 
-assignId = Counter(0)
-assignId = Counter(0)
+assignId = Counter(4)
 
 adminView = Blueprint('adminView', __name__)
 
@@ -129,7 +128,7 @@ def adminPostSuggestion(userId):
     desc = request.form.get("description")
 
     if not user:
-        render_template('admin/users.html')
+        redirect(url_for('adminView.admin'))
 
     new = Suggestion(id = assignId.get(), u = user.id, d = desc)
     assignId.increment()
@@ -137,7 +136,7 @@ def adminPostSuggestion(userId):
     db.session.commit()
     
 
-    return render_template('admin/users.html', user = user)
+    return redirect(url_for('adminView.admin'))
 
 
 @adminView.route('/admin/attractions/pending')
@@ -239,18 +238,55 @@ def adminViewApproveReview(reviewId):
     return redirect(url_for('adminView.adminViewPendingReviews'))
 
 @adminView.route('/admin/reviews/delete/<int:reviewId>')
+@login_required
 def adminViewDeleteReview(reviewId):
     check = current_user.get_id()
     user = User.query.filter_by(id = check).first()
+    toDelete = Review.query.filter_by(reviewId = reviewId).first()
 
-    if not user or not user.isAdmin:
+
+    if not toDelete.creatorId == check or not user.isAdmin:
         return redirect(url_for('main.index'))
 
 
-    toDelete = Review.query.filter_by(reviewId = reviewId).first()
+    if not toDelete:
+        return redirect(url_for('main.index'))
 
     db.session.delete(toDelete)
     db.session.commit()
 
     return redirect(url_for('adminView.adminViewPendingReviews'))
+
+@adminView.route('/admin/<int:userId>/reviews')
+@login_required
+def adminViewUserReviews(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+  
+    toCheck = User.query.filter_by(id = userId).first()
+    if not toCheck:
+        return redirect(url_for('adminView.admin'))
+    
+    reviews = Review.query.filter_by(userId = userId).all()
+    
+    return render_template('admin/userreviews.html', user = toCheck, reviews = reviews)
+
+@adminView.route('/admin/<int:userId>/downloads')
+def adminViewUserDownloads(userId):
+    check = current_user.get_id()
+    user = User.query.filter_by(id = check).first()
+
+    if not user or not user.isAdmin:
+        return redirect(url_for('main.index'))
+  
+    toCheck = User.query.filter_by(id = userId).first()
+    if not toCheck:
+        return redirect(url_for('adminView.admin'))
+    
+    downloads = Download.query.filter_by(userId = userId).all()
+    return render_template('userdownloads.html', user = toCheck)
+
 

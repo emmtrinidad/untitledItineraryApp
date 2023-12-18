@@ -13,17 +13,18 @@
         {% endwith %}
         
         {% if countries%}
-            <h2>locations</h2>
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
                     <th>Country name</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                     {% for row in countries %}
                         <tr> 
-                              <a href="/locations/countries/{{row['countryName']}}">{{row['countryName']}}</a>
+                              <th><a>{{row['countryName']}}</a></th>
+                              <td><a href="/locations/{{row['countryName']}}/provinces">View</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

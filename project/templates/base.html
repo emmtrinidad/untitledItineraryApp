@@ -51,6 +51,11 @@
                             <a href="{{ url_for('auth.logout') }}" class="navbar-item">
                                 Logout
                             </a>
+
+                            <a href="/suggestions/{{current_user.get_id()}}" class="navbar-item">
+                                suggestions
+                            </a>
+
                             {% endif %}
 
                             <a href="{{ url_for('sched.schedules') }}" class="navbar-item">
@@ -65,9 +70,15 @@
                             <a href="{{ url_for('area.locations') }}" class="navbar-item">
                                 locations
                             </a> 
-                            {% if current_user.isAdmin %}
-                            <a>admin</a>
-                            {% endif %}
+
+                            <a href="{{url_for('sched.getDownloads')}}" class="navbar-item">
+                                downloads
+                            </a>
+
+                            <a href="/myreviews" class="navbar-item">
+                                My reviews
+                            </a>
+
                         </div>
                     </div>
                 </div>

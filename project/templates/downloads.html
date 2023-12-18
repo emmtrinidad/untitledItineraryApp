@@ -14,7 +14,6 @@
         
         {% if schedules%}
             <a href="/schedules"> Download new schedules!</a>    
-            <h3>counter at {{count}}</h3>
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
@@ -36,7 +35,7 @@
                               <td>{{row['endDate']}}</td>
                               <td>
                                 <a href="schedules/{{row['scheduleId']}}">view</a>
-                                <a>remove</a>
+                                <a href="/downloads/{{current_user.id}}/{{row['scheduleId']}}/remove">remove</a>
                             </td>
                         </tr>
                     {% endfor %}

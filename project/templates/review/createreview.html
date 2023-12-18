@@ -2,7 +2,12 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Create review for {{attraction['Name']}}</h3>
+{% if review %}
+    <h3 class="title">Edit existing review</h3>
+{% elif attraction %}
+    <h3 class="title">Edit existing review</h3>
+    <h3 class="title">Create review fo  r {{attraction['Name']}}</h3>
+{% endif %}
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -11,8 +16,28 @@
             </div>
         {% endif %}
         {% endwith %}
-        <form method="POST" action="/locations/{{city['airportCode']}}/{{attraction['Name']}}/addreview">
 
+    {% if review %}
+        <form method="POST" action="/myreviews/{{review['reviewId']}}">
+    {% elif city and attraction %}
+        <form method="POST" action="/locations/{{city['airportCode']}}/{{attraction['Name']}}/addreview">
+    {% endif %}
+
+        {% if review %}
+            <h3>PLEASE NOTE THAT SUBMITTING THIS WILL PUT YOUR REVIEW UP FOR APPROVAL!</h3>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="comment" placeholder="Comment" autofocus="" value = "{{review['comment']}}" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="number" min = "0" max="5" step="1" name="stars" placeholder="Stars" value = "{{review['stars']}}"autofocus="" required>
+                </div>
+            </div>
+
+        {% else %}
             <div class="field">
                 <div class="control">
                     <input class="input is-large" type="text" name="comment" placeholder="Comment" autofocus="" required>
@@ -24,10 +49,15 @@
                     <input class="input is-large" type="number" min = "0" max="5" step="1" name="stars" placeholder="Stars" autofocus="" required>
                 </div>
             </div>
+        {% endif %}
 
+        {% if review %}
+            <button class="button is-block is-info is-large is-fullwidth">Edit!</button>
+        {% else %}
             <button class="button is-block is-info is-large is-fullwidth">Submit!</button>
+        {% endif %}
+
         </form>
-        <a href="/signup">sign up here</a>
     </div>
 </div>
 {% endblock %}

@@ -144,14 +144,6 @@ class Attraction(db.Model):
     activity = db.Column(db.String(50), nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
 
-class Download(db.Model):
-
-    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), primary_key = True)
-    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
-
-    def __init__(self, sId, uId):
-        self.scheduleId = sId
-        self.userId = uId
     def __init__(self, cc, addy, name, cost, restaurantType, menu, act):
         self.cityCode = cc
         self.Address = addy
@@ -161,14 +153,14 @@ class Download(db.Model):
         self.menu = menu
         self.activity = act
         self.approvedFlag = False #starts off as false
-""""
-    def __init__(self, cc, addy, name, cost, act):
-        self.cityCode = cc
-        self.Address = addy
-        self.Name = name
-        self.Cost = cost
-        self.typeOfRestaurant = None
-        self.menu = None
-        self.activity = act
-        self.approvedFlag = False
-"""
+
+
+class Download(db.Model):
+
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), primary_key = True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+
+    def __init__(self, sId, uId):
+        self.scheduleId = sId
+        self.userId = uId
+    

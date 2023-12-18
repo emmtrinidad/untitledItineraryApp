@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">{{my}} Suggestions</h3>
+    <h3 class="title">Suggestions</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -27,9 +27,7 @@
                               <th>{{row['adminId']}}</th>
                               <td>{{row['userId']}}</td>
                               <td>{{row['description']}}</td>
-                              <td>
-                                <a>remove</a>
-                            </td>
+
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -34,8 +34,9 @@
                               <td>{{row['startDate']}}</td>
                               <td>{{row['endDate']}}</td>
                               <td><a href="schedules/{{row['scheduleId']}}">view</a>
-                                {% if current_user.is_authenticated %} <a href="downloadschedule/{{row['scheduleId']}}">Download</a> {% endif %}
-                                {% if current_user.isAdmin == true %}<a>Delete</a>{% endif %}
+                                {% if current_user.is_authenticated and current_user.id != row['creatorId']%} <a href="downloadschedule/{{row['scheduleId']}}">Download</a> {% endif %}
+                                {% if current_user.id == row['creatorId']%} <a href ="/schedules/{{row['scheduleId']}}/edit">Edit</a>{% endif %}
+                                {% if current_user.isAdmin == true %}<a href="/schedules/{{row['scheduleId']}}/remove">Delete</a>{% endif %}
                                 </td>
                         </tr>
                     {% endfor %}
@@ -44,7 +45,7 @@
               
 
         {% else %}
-            <h3>schedules is empty</h3>
+            <h3>No schedules here</h3>
             <a href="/createschedule">why not make one?</a>
         {% endif %}
     </div>

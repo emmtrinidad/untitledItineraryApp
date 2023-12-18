@@ -17,11 +17,14 @@
                 <thead>
                   <tr style="text-align: right;">
                     <th>Creator Id</th>
-                    <th>comment</th>
                     <th>stars</th>
-                    <th>approved?</th>
-                    <th>review id</th>
-                    <th>Actions</th>
+                    <th>comment</th>
+                    {%if current_user.isAdmin%}
+                        <th>approved?</th>
+                        <th>review id</th>
+                        <th>Actions</th>
+                    {%endif%}  
+
                   </tr>
                 </thead>
                 <tbody>
@@ -30,13 +33,19 @@
                               <th>{{row['creatorId']}}</th>
                               <td>{{row['comment']}}</td>
                               <td>{{row['stars']}}</td>
-                              <td>{{row['approvedFlag']}}</td>
-                              <td>{{row['reviewId']}}</td>
+                            {%if current_user.isAdmin%}
+                                <td>{{row['approvedFlag']}}</td>
+                            {%endif%}  
+                                <td>{{row['reviewId']}}</td>
                               <td>
                                 {% if not row['approvedFlag']%}
                                 <a href="/admin/reviews/approve/{{row['reviewId']}}">approve review</a>
                                 {% endif %}
+
+                            {%if current_user.isAdmin or current_user.id == row['creatorId']%}
                                 <a href="/admin/reviews/delete/{{row['reviewId']}}">delete</a>
+                            {%endif%}
+
                             </td>
                         </tr>
                     {% endfor %}

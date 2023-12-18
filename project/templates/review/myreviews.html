@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">{{attraction['Name']}}</h3>
+    <h3 class="title">My Reviews</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -13,7 +13,6 @@
         {% endwith %}
         
         {% if reviews %}
-            <a href="/locations/{{city['airportCode']}}/{{attraction['Address']}}/addreview">Add a new review!</a>    
             <table border="1" class="dataframe">
                 <thead>
                   <tr style="text-align: right;">
@@ -21,6 +20,8 @@
                     <th>User Id</th>
                     <th>Comment</th>
                     <th>Stars</th>
+                    <th>Address</th>
+                    <th>approved?</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -31,9 +32,11 @@
                               <td>{{row['creatorId']}}</td>
                               <td>{{row['comment']}}</td>
                               <td>{{row['stars']}}</td>
+                              <td>{{row['attractionAddress']}}</td>
+                              <td>{{row['approvedFlag']}}</td>
                               <td>
                                 {% if current_user.id == row['creatorId'] %}
-                                    <a href="/review/{{row['reviewId']}}/edit">edit review</a>
+                                    <a href="/myreviews/{{row['reviewId']}}">edit review</a>
                                 {% endif %}
                                 {% if current_user.id == row['creatorId'] or current_user.isAdmin %}
                                     <a>delete review</a>
@@ -47,7 +50,6 @@
 
         {% else %}
             <h3>No reviews</h3>
-            <a href="/locations/{{city['airportCode']}}/{{attraction['Address']}}/addreview">Make one</a>
         {% endif %}
     </div>
 </div>

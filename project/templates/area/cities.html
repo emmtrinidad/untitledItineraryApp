@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">{{province['provinceName']}}</h3>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}.</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% if cities %}
+            <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th>Airport Code</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for row in cities %}
+                        <tr> 
+                              <th>{{row['airportCode']}}</th>
+                              <td>{{row['name']}}</td>
+                              <td><a href="/locations/{{row['countryName']}}/{{row['provinceName']}}/cities/{{row['airportCode']}}">View</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              
+
+        {% else %}
+            <h3>no data</h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
