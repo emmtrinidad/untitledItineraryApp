@@ -94,3 +94,20 @@ def editReview(reviewId):
     reviews = Review.query.filter_by(creatorId = uId).all()
 
     return render_template('review/myreviews.html', reviews = reviews)
+
+@reviews.route('/myreviews/<int:reviewId>/delete')
+def deleteReview(reviewId):
+
+    uId = current_user.get_id()
+    user = User.query.filter_by(id = uId).first()
+
+    review = Review.query.filter_by(reviewId = reviewId).first()
+
+    if not review or review.creatorId != uId or not user.isAdmin:
+        redirect(url_for('main.index'))
+
+    db.session.delete(review)
+    db.session.commit()
+
+    return redirect(url_for('reviews.myReviews'))
+

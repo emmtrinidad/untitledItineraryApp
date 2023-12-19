@@ -15,11 +15,19 @@ scheduleAssign = Counter(50007)
 eventAssign = Counter(60007)
 
 
+
 @sched.route('/schedules')
 def schedules():
     schedules = Schedule.query.order_by(Schedule.scheduleId).all()
 
-    return render_template('schedules.html', schedules = schedules, count = scheduleAssign.get())
+    downloadIds = []
+    
+    downloads = Download.query.filter_by(userId = current_user.id).all()
+
+    for download in downloads:
+        downloadIds.append(download.scheduleId)
+
+    return render_template('schedules.html', schedules = schedules, count = scheduleAssign.get(), downloads = downloadIds)
 
 #placeholder for accessing schedule, will redirect to new page containing said schedule
 @sched.route('/schedules/<int:param>//')
