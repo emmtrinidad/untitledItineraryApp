@@ -34,7 +34,13 @@
                               <td>{{row['startDate']}}</td>
                               <td>{{row['endDate']}}</td>
                               <td><a href="schedules/{{row['scheduleId']}}">view</a>
-                                {% if current_user.is_authenticated and current_user.id != row['creatorId']%} <a href="downloadschedule/{{row['scheduleId']}}">Download</a> {% endif %}
+                                {% if current_user.is_authenticated and current_user.id != row['creatorId']%} 
+                                    {% if row['scheduleId'] in downloads %}
+                                        <a>Already downloaded!</a> 
+                                    {% else %}
+                                        <a href="downloadschedule/{{row['scheduleId']}}">Download</a> 
+                                    {% endif %}
+                                {% endif %}
                                 {% if current_user.id == row['creatorId']%} <a href ="/schedules/{{row['scheduleId']}}/edit">Edit</a>{% endif %}
                                 {% if current_user.isAdmin == true %}<a href="/schedules/{{row['scheduleId']}}/remove">Delete</a>{% endif %}
                                 </td>
