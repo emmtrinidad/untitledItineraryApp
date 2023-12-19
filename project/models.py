@@ -62,7 +62,7 @@ class Event(db.Model):
     name = db.Column(db.String(300), nullable = False)
     eventId = db.Column(db.Integer, primary_key = True)
     creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
-    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), nullable = False)
+    scheduleId = db.Column(db.Integer, db.ForeignKey('schedule.scheduleId'), nullable = False, primary_key=True)
     startTime = db.Column(db.DateTime, nullable = False)
     endTime = db.Column(db.DateTime, nullable = False)
     location = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = True) #does not always need set location
@@ -100,8 +100,8 @@ class City(db.Model):
 
 class Review(db.Model):
     reviewId = db.Column(db.Integer, primary_key = True)
-    attractionAddress = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = False)
-    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    attractionAddress = db.Column(db.String(300), db.ForeignKey('attraction.Address'), nullable = False, primary_key=True)
+    creatorId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False, primary_key=True)
     comment = db.Column(db.String(3000), nullable = True) #people can just leave only starred reviews
     stars = db.Column(db.Integer, nullable = False)
     approvedFlag = db.Column(db.Boolean, nullable = False)
@@ -117,8 +117,8 @@ class Review(db.Model):
 class Suggestion(db.Model):
 
     suggestionId = db.Column(db.Integer, primary_key = True)
-    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
-    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False, primary_key=True)
+    adminId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False, primary_key=True)
     description = db.Column(db.String(3000), nullable = False) # review is nothing without the description
 
     def __init__(self, id, u, a, d):

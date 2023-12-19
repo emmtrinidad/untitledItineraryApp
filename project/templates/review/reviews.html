@@ -33,7 +33,7 @@
                               <td>{{row['stars']}}</td>
                               <td>
                                 {% if current_user.id == row['creatorId'] %}
-                                    <a href="/review/{{row['reviewId']}}/edit">edit review</a>
+                                    <a href="/myreviews/{{row['reviewId']}}">edit review</a>
                                 {% endif %}
                                 {% if current_user.id == row['creatorId'] or current_user.isAdmin %}
                                     <a>delete review</a>

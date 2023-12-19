@@ -7,7 +7,7 @@ from counter import Counter
 
 reviews = Blueprint('reviews', __name__)
 
-idAssign = Counter(8)
+idAssign = Counter(10)
 
 @reviews.route('/locations/<string:cityCode>/<string:address>')
 def seeReviews(cityCode, address):
